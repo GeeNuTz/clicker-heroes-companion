@@ -1,4 +1,6 @@
-# Clicker Heroes Companion Overlay
+# Clicker Heroes Companion
+
+> Credits: everything this app owes to the community is listed in **[CREDITS.md](CREDITS.md)**. Overlay
 
 Reads your Clicker Heroes save file, computes the same numbers the game does,
 and tells you what to do next. It never writes to the save and never touches
