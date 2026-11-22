@@ -169,8 +169,11 @@ function render(payload) {
     })
     .join("");
 
+  // Show every hero (the tab scrolls): the advised hero was being cut off by a
+  // 16-row cap because the list is ordered by DPS, not by progression.
   $("heroes").innerHTML = state.heroes
-    .slice(0, 16)
+    .slice()
+    .sort((a, b) => (b.level - a.level) || (a.id - b.id))
     .map(
       (h) =>
         `<tr><td class="${h.gilds ? "gilded" : ""}">${esc(h.name)}${h.gilds ? ` <span class="gmark">+${h.gilds}</span>` : ""}</td>` +
