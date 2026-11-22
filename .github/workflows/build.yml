@@ -3,6 +3,9 @@ on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+
+permissions:
+  contents: write
 jobs:
   build:
     strategy:
@@ -11,10 +14,13 @@ jobs:
         include:
           - os: ubuntu-latest
             target: linux
+            asset: dist/*.AppImage
           - os: windows-latest
             target: win
+            asset: dist/*.exe
           - os: macos-latest
             target: mac
+            asset: dist/*.dmg
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -35,7 +41,5 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            dist/*.AppImage
-            dist/*.exe
-            dist/*.dmg
+          files: ${{ matrix.asset }}
+          fail_on_unmatched_files: false
