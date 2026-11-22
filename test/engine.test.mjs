@@ -1,4 +1,5 @@
 import test from "node:test";
+import path from "node:path";
 import assert from "node:assert/strict";
 import zlib from "node:zlib";
 import { decodeSave, saveCandidates } from "../src/save.mjs";
@@ -69,7 +70,7 @@ test("saveCandidates are absolute paths under a Steam root", () => {
   assert.ok(list.length > 0);
   for (const p of list) {
     assert.ok(p.endsWith("playerSaveData.txt"));
-    assert.ok(p.startsWith("/"));
+    assert.ok(path.isAbsolute(p), `expected an absolute path, got ${p}`);
   }
 });
 
