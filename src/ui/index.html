@@ -55,6 +55,16 @@
       </section>
 
       <section id="tab-heroes" class="tabpane">
+        <label class="setting">Sort
+          <select id="hero-sort">
+            <option value="game">Game order</option>
+            <option value="dps">DPS (high → low)</option>
+            <option value="cost-asc">Cost (low → high)</option>
+            <option value="cost-desc">Cost (high → low)</option>
+            <option value="level">Level (high → low)</option>
+            <option value="gilds">Gilds (high → low)</option>
+          </select>
+        </label>
         <table class="tbl"><thead><tr><th>Hero</th><th class="r">Gild</th><th class="r">Lvl</th><th class="r">Next</th><th class="r">DPS</th></tr></thead><tbody id="heroes"></tbody></table>
       </section>
 
@@ -71,6 +81,16 @@
 
       <section id="tab-gilds" class="tabpane">
         <div class="hint" id="gild-note"></div>
+        <label class="setting">Sort
+          <select id="hero-sort">
+            <option value="game">Game order</option>
+            <option value="dps">DPS (high → low)</option>
+            <option value="cost-asc">Cost (low → high)</option>
+            <option value="cost-desc">Cost (high → low)</option>
+            <option value="level">Level (high → low)</option>
+            <option value="gilds">Gilds (high → low)</option>
+          </select>
+        </label>
         <table class="tbl"><thead><tr><th>Hero</th><th class="r">Gilds</th><th class="r">Bonus</th><th class="r">Level</th><th class="r">DPS share</th></tr></thead><tbody id="gilds"></tbody></table>
         <div class="hint">Each gild is +50% base damage to that hero. Put them all on one hero — spreading them wastes damage.</div>
       </section>

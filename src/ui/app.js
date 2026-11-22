@@ -171,9 +171,19 @@ function render(payload) {
 
   // Show every hero (the tab scrolls): the advised hero was being cut off by a
   // 16-row cap because the list is ordered by DPS, not by progression.
+  const sortBy = $("hero-sort")?.value || "game";
+  const costNum = (h) => Number(h.nextLevelCost) || 0;
+  const comparators = {
+    game: (a, b) => a.id - b.id,
+    dps: (a, b) => b.dpsNum - a.dpsNum,
+    "cost-asc": (a, b) => costNum(a) - costNum(b),
+    "cost-desc": (a, b) => costNum(b) - costNum(a),
+    level: (a, b) => (b.level - a.level) || (a.id - b.id),
+    gilds: (a, b) => (b.gilds - a.gilds) || (a.id - b.id),
+  };
   $("heroes").innerHTML = state.heroes
     .slice()
-    .sort((a, b) => (b.level - a.level) || (a.id - b.id))
+    .sort(comparators[sortBy] || comparators.game)
     .map(
       (h) =>
         `<tr><td class="${h.gilds ? "gilded" : ""}">${esc(h.name)}${h.gilds ? ` <span class="gmark">+${h.gilds}</span>` : ""}</td>` +
@@ -253,6 +263,9 @@ document.getElementById("btn-close").addEventListener("click", () => {
   else window.close();
 });
 
+document.getElementById("hero-sort")?.addEventListener("change", () => {
+  if (window.__lastPayload) render(window.__lastPayload);
+});
 document.getElementById("btn-min").addEventListener("click", () => {
   if (window.chOverlay?.minimize) window.chOverlay.minimize();
   else document.body.classList.toggle("mini"); // browser fallback
@@ -476,6 +489,7 @@ async function first() {
   try {
     const r = await fetch("/api/state");
     const p = await r.json();
+  window.__lastPayload = p;
     if (p.ok) render(p);
     else $("next-title").textContent = "save error: " + (p.error || "unknown");
   } catch (e) {
