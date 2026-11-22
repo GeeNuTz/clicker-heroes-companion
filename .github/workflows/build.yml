@@ -14,13 +14,19 @@ jobs:
         include:
           - os: ubuntu-latest
             target: linux
-            asset: dist/*.AppImage
+            asset: |
+              dist/*.AppImage
+              dist/latest*.yml
           - os: windows-latest
             target: win
-            asset: dist/*.exe
+            asset: |
+              dist/*.exe
+              dist/latest*.yml
           - os: macos-latest
             target: mac
-            asset: dist/*.dmg
+            asset: |
+              dist/*.dmg
+              dist/latest*.yml
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4

@@ -1,6 +1,6 @@
 {
   "name": "clicker-heroes-companion",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "private": true,
   "type": "module",
   "description": "Companion for Clicker Heroes 1: reads your save, shows live stats and the next actions.",
@@ -15,7 +15,8 @@
     "dist:mac": "electron-builder --mac"
   },
   "dependencies": {
-    "decimal.js": "^10.4.3"
+    "decimal.js": "^10.4.3",
+    "electron-updater": "^6.8.11"
   },
   "devDependencies": {
     "electron": "^45.4.1",
@@ -61,7 +62,14 @@
       ],
       "category": "public.app-category.games",
       "icon": "build/icon.png"
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "GeeNuTz",
+        "repo": "clicker-heroes-companion"
+      }
+    ]
   },
   "productName": "Clicker Heroes Companion"
 }

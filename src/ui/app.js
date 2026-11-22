@@ -367,6 +367,24 @@ document.getElementById("btn-save-settings").addEventListener("click", async () 
     $("set-status").textContent = "invalid JSON";
   }
 });
+document.getElementById("btn-check-update")?.addEventListener("click", async () => {
+  $("set-status").textContent = "checking for updates…";
+  if (!window.chOverlay?.checkUpdate) {
+    $("set-status").textContent = "updates need the desktop app";
+    return;
+  }
+  const r = await window.chOverlay.checkUpdate();
+  $("set-status").textContent = r.ok
+    ? (r.version ? `update ${r.version} available / downloading` : "already up to date")
+    : "update check failed: " + r.error;
+});
+
+document.getElementById("btn-install-update")?.addEventListener("click", async () => {
+  if (!window.chOverlay?.installUpdate) return;
+  const r = await window.chOverlay.installUpdate();
+  if (!r.ok) $("set-status").textContent = "install failed: " + r.error;
+});
+
 document.getElementById("btn-reset-settings").addEventListener("click", async () => {
   const defaults = {
     build: "idle", theme: "dark", fontScale: 1.15, mercFocus: "ruby",

@@ -1,6 +1,7 @@
 // Frameless, transparent, always-on-top window for the overlay UI.
 // Quit with Ctrl+Shift+Q, hide/show with Ctrl+Shift+H, reload with Ctrl+Shift+R.
 import { app, BrowserWindow, dialog, globalShortcut, shell, screen, ipcMain } from "electron";
+import { autoUpdater } from "electron-updater";
 import path from "node:path";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -135,6 +136,28 @@ app.whenReady().then(() => {
     const f = Math.min(2, Math.max(0.75, Number(factor) || 1));
     win?.webContents.setZoomFactor(f);
   });
+  // Auto-update from GitHub Releases (AppImage / exe / dmg builds only).
+  autoUpdater.autoDownload = true;
+  autoUpdater.on("update-available", (i) => console.log("update available", i?.version));
+  autoUpdater.on("update-downloaded", (i) => console.log("update downloaded", i?.version));
+  autoUpdater.on("error", (e) => console.log("update error:", e?.message || e));
+  ipcMain.handle("update:check", async () => {
+    try {
+      const r = await autoUpdater.checkForUpdates();
+      return { ok: true, version: r?.updateInfo?.version ?? null };
+    } catch (err) {
+      return { ok: false, error: String(err?.message || err) };
+    }
+  });
+  ipcMain.handle("update:install", async () => {
+    try {
+      autoUpdater.quitAndInstall();
+      return { ok: true };
+    } catch (err) {
+      return { ok: false, error: String(err?.message || err) };
+    }
+  });
+
   startServer()
     .catch((err) => console.error("server failed:", err))
     .finally(() => create());
