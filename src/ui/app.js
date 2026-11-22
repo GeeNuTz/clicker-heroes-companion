@@ -198,6 +198,29 @@ function render(payload) {
     )
     .join("");
 
+  const ver = payload.suggest?.version || payload.version || "?";
+  if ($("appver")) $("appver").textContent = "v" + ver;
+
+  // Update check: silent unless a newer release exists (works once public).
+  if ($("update") && !window.__updateChecked) {
+    window.__updateChecked = true;
+    fetch("https://api.github.com/repos/GeeNuTz/clicker-heroes-companion/releases/latest", { headers: { accept: "application/vnd.github+json" } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((rel) => {
+        if (!rel?.tag_name) return;
+        const latest = String(rel.tag_name).replace(/^v/, "");
+        const cmp = (a, b) => {
+          const pa = a.split(".").map(Number), pb = b.split(".").map(Number);
+          for (let i = 0; i < 3; i++) if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0);
+          return 0;
+        };
+        if (cmp(latest, String(ver)) > 0) {
+          $("update").innerHTML = ` · <a href="${rel.html_url}" target="_blank" style="color:var(--accent)">update v${latest}</a>`;
+        }
+      })
+      .catch(() => {});
+  }
+
   const age = payload.saveAgeSeconds;
   $("stamp").textContent = age == null
     ? new Date(payload.at).toLocaleTimeString()

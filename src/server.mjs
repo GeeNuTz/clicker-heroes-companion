@@ -6,6 +6,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { convertSave, decodeSave, encodeSave, findSave, readSave } from "./save.mjs";
 import { closeGame, gamePids, isGameRunning } from "./gameproc.mjs";
+const APP_VERSION = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version;
 import { buildState } from "./engine.mjs";
 import { advise } from "./advice.mjs";
 import { ancientSuggestions, outsiderSuggestions, loadSettings } from "./suggest.mjs";
@@ -41,7 +42,9 @@ async function snapshot() {
   const state = buildState(save, { now: Date.now() });
   const advice = advise(state, { settings: loadSettings() });
   const settings = loadSettings();
+  const version = APP_VERSION;
   const always = {
+    version,
     settings: { theme: settings.theme || "dark", fontScale: settings.fontScale || 1, build: settings.build, fontFamily: settings.fontFamily || "sans", density: settings.density || "comfortable" },
     afterTranscend: advice.transcendReady === true,
     ancients: ancientSuggestions(state, settings),
