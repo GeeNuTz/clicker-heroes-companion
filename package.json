@@ -39,7 +39,7 @@
       "LICENSE"
     ],
     "directories": {
-      "output": "../dist"
+      "output": "dist"
     },
     "linux": {
       "target": [
