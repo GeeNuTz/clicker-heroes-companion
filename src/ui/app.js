@@ -374,9 +374,23 @@ document.getElementById("btn-check-update")?.addEventListener("click", async () 
     return;
   }
   const r = await window.chOverlay.checkUpdate();
-  $("set-status").textContent = r.ok
-    ? (r.version ? `update ${r.version} available / downloading` : "already up to date")
-    : "update check failed: " + r.error;
+  if (r.ok && r.version) {
+    $("set-status").textContent = `update ${r.version} available — downloading`;
+    return;
+  }
+  if (r.ok) {
+    $("set-status").textContent = "already up to date";
+    return;
+  }
+  // Dev checkout: the packaged updater is not present, so point at Releases.
+  try {
+    const rel = await (await fetch("https://api.github.com/repos/GeeNuTz/clicker-heroes-companion/releases/latest")).json();
+    $("set-status").innerHTML = rel?.tag_name
+      ? `latest release ${rel.tag_name} — <a href="${rel.html_url}" target="_blank" style="color:var(--accent)">download</a> (dev copies update with bin/ch-update)`
+      : "update check failed: " + r.error;
+  } catch {
+    $("set-status").textContent = "update check failed: " + r.error;
+  }
 });
 
 document.getElementById("btn-install-update")?.addEventListener("click", async () => {
