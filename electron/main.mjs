@@ -1,7 +1,8 @@
 // Frameless, transparent, always-on-top window for the overlay UI.
 // Quit with Ctrl+Shift+Q, hide/show with Ctrl+Shift+H, reload with Ctrl+Shift+R.
 import { app, BrowserWindow, dialog, globalShortcut, shell, screen, ipcMain } from "electron";
-import { autoUpdater } from "electron-updater";
+import updaterPkg from "electron-updater";
+const { autoUpdater } = updaterPkg;
 import path from "node:path";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
