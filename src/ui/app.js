@@ -200,6 +200,7 @@ function render(payload) {
 
   const ver = payload.suggest?.version || payload.version || "?";
   if ($("appver")) $("appver").textContent = "v" + ver;
+  if ($("brandver")) $("brandver").textContent = "v" + ver;
 
   // Update check: silent unless a newer release exists (works once public).
   if ($("update") && !window.__updateChecked) {

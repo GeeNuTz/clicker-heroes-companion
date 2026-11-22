@@ -283,3 +283,5 @@ input[type="text"] {
 .gmark { color: var(--accent); font-size: 11px; }
 
 .dead { color: #ff8a8a; font-weight: 600; }
+
+.brandver { color: var(--dim); font-size: 10px; letter-spacing: 0.02em; }
