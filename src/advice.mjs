@@ -420,8 +420,9 @@ function planHero(state, gold) {
   if (power.length) {
     const best = power.sort((a, b) => b.gilds - a.gilds || b.level - a.level)[0];
     return {
-      title: `Level ${best.name} (x10 at each 1000)`,
-      detail: `Power hero with ${best.gilds} gilds; ${fmtNum(best.next25Cost)} gold per 25 levels.`,
+      title: `Level ${best.name} to ${Math.ceil((best.level + 1) / 1000) * 1000} (next x10)`,
+      detail: `Currently ${best.level}; the next x10 damage milestone is level ${Math.ceil((best.level + 1) / 1000) * 1000}. ` +
+        `${best.gilds} gilds; ${fmtNum(best.next25Cost)} gold per 25 levels.`,
     };
   }
 
