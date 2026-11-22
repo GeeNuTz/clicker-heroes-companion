@@ -1,0 +1,67 @@
+{
+  "name": "clicker-heroes-companion",
+  "version": "0.6.1",
+  "private": true,
+  "type": "module",
+  "description": "Companion for Clicker Heroes 1: reads your save, shows live stats and the next actions.",
+  "scripts": {
+    "start": "node src/server.mjs",
+    "app": "electron .",
+    "state": "node src/cli.mjs",
+    "test": "node --test test/",
+    "dist": "electron-builder",
+    "dist:linux": "electron-builder --linux",
+    "dist:win": "electron-builder --win",
+    "dist:mac": "electron-builder --mac"
+  },
+  "dependencies": {
+    "decimal.js": "^10.4.3"
+  },
+  "devDependencies": {
+    "electron": "^45.4.1",
+    "electron-builder": "^26.18.0"
+  },
+  "main": "electron/main.mjs",
+  "author": {
+    "name": "GeeNuTz"
+  },
+  "license": "MIT",
+  "build": {
+    "appId": "dev.geenutz.clickerheroeslive",
+    "productName": "Clicker Heroes Companion",
+    "asar": true,
+    "files": [
+      "electron/**",
+      "src/**",
+      "settings.json",
+      "README.md",
+      "CHANGELOG.md",
+      "LICENSE"
+    ],
+    "directories": {
+      "output": "../dist"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Game",
+      "icon": "build/icon.png",
+      "executableName": "clicker-heroes-companion"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.png"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.games",
+      "icon": "build/icon.png"
+    }
+  },
+  "productName": "Clicker Heroes Companion"
+}

@@ -1,0 +1,41 @@
+# Node.js
+node_modules/
+dist/
+build/
+coverage/
+.npm/
+.pnpm-store/
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local
+
+# Java/JVM
+target/
+.gradle/
+*.class
+*.jar
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+
+# C/C++
+cmake-build-*/
+*.o
+*.obj
+*.a
+*.so
+*.dll
+*.exe
+
+# Common
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+.idea/
+.vscode/
+*.swp

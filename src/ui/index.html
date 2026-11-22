@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Clicker Heroes Companion</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main id="app" class="panel">
+      <header class="bar">
+        <div class="brand">CLICKER HEROES <span class="live">COMPANION</span></div>
+        <div class="bar-right">
+          <span id="patch" class="muted">—</span>
+          <button id="btn-reload" class="winbtn" title="reload">⟳</button>
+          <button id="btn-min" class="winbtn" title="minimise (Ctrl+Shift+M)">—</button>
+          <button id="btn-close" class="winbtn" title="close (Ctrl+Shift+Q)">✕</button>
+          <span id="dot" class="dot off" title="stream"></span>
+        </div>
+      </header>
+
+      <section class="stats">
+        <div class="stat"><label>ZONE</label><b id="zone">—</b><span id="hze" class="sub">—</span></div>
+        <div class="stat"><label>DPS</label><b id="dps">—</b><span id="boss" class="sub">—</span></div>
+        <div class="stat"><label>HERO SOULS</label><b id="souls">—</b><span id="soulsub" class="sub">—</span></div>
+        <div class="stat"><label>GOLD</label><b id="gold">—</b><span id="goldsub" class="sub">—</span></div>
+        <div class="stat"><label>MAX ZONE (CURRENT DPS)</label><b id="maxzone">—</b><span class="sub">highest boss you kill with your DPS right now</span></div>
+      </section>
+
+      <section id="next" class="next">
+        <div class="next-label">DO THIS NOW</div>
+        <div id="next-title" class="next-title">waiting for save…</div>
+        <pre id="next-detail" class="next-detail"></pre>
+      </section>
+
+      <section id="warnings" class="warnings"></section>
+
+      <nav class="tabs">
+        <button data-tab="plan" class="active">Plan</button>
+        <button data-tab="ancients">Ancients</button>
+        <button data-tab="heroes">Heroes</button>
+        <button data-tab="mercs">Mercs</button>
+        <button data-tab="outsiders">Outsiders</button>
+        <button data-tab="gilds">Gilds</button>
+        <button data-tab="relics">Relics</button>
+        <button data-tab="help">?</button>
+        <button data-tab="settings">⚙</button>
+      </nav>
+
+      <section id="tab-plan" class="tabpane active"><ol id="plan" class="timeline"></ol></section>
+
+      <section id="tab-ancients" class="tabpane">
+        <div class="hint" id="ancients-hint">Next = hero souls for the next level (Chor'gorloth discount already applied).</div>
+        <table class="tbl"><thead><tr><th>#</th><th>Ancient</th><th class="r">Cur</th><th class="r">Sug</th><th class="r">Diff</th></tr></thead><tbody id="ancients"></tbody></table>
+      </section>
+
+      <section id="tab-heroes" class="tabpane">
+        <table class="tbl"><thead><tr><th>Hero</th><th class="r">Gild</th><th class="r">Lvl</th><th class="r">Next</th><th class="r">DPS</th></tr></thead><tbody id="heroes"></tbody></table>
+      </section>
+
+      <section id="tab-mercs" class="tabpane">
+        <div class="note" id="merc-advice"></div>
+        <table class="tbl"><thead><tr><th>Merc</th><th class="r">Rarity</th><th class="r">Lvl</th><th class="r">Quest ends</th><th class="r">Dies in</th></tr></thead><tbody id="mercs"></tbody></table>
+        <div class="hint">The timer comes straight from the save (<code>timeToDie</code>). It does not tick with wall-clock while the game is idle — it moves when the game writes it — so treat it as "at last save".</div>
+      </section>
+
+      <section id="tab-outsiders" class="tabpane">
+        <div class="hint" id="outsider-note">Spent with Ancient Souls after transcending. Only increases are possible — outsiders can't be respecced.</div>
+        <table class="tbl"><thead><tr><th>#</th><th>Outsider</th><th class="r">Cur</th><th class="r">Sug</th><th class="r">Diff</th></tr></thead><tbody id="outsiders"></tbody></table>
+      </section>
+
+      <section id="tab-gilds" class="tabpane">
+        <div class="hint" id="gild-note"></div>
+        <table class="tbl"><thead><tr><th>Hero</th><th class="r">Gilds</th><th class="r">Bonus</th><th class="r">Level</th><th class="r">DPS share</th></tr></thead><tbody id="gilds"></tbody></table>
+        <div class="hint">Each gild is +50% base damage to that hero. Put them all on one hero — spreading them wastes damage.</div>
+      </section>
+
+      <section id="tab-relics" class="tabpane">
+        <div class="hint" id="relic-note"></div>
+        <table class="tbl"><thead><tr><th>Relic</th><th class="r">Level</th><th class="r">Rarity</th></tr></thead><tbody id="relics"></tbody></table>
+      </section>
+
+      <section id="tab-settings" class="tabpane">
+        <div class="hint">Build affects which ancients/outsiders get weight. Save writes settings.json; Reload forces a fresh save read.</div>
+        <label class="setting">Build
+          <select id="set-build">
+            <option value="idle">idle</option>
+            <option value="active">active</option>
+            <option value="hybrid">hybrid</option>
+          </select>
+        </label>
+        <label class="setting">Theme
+          <select id="set-theme">
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+            <option value="aetheris">Aetheris</option>
+            <option value="comfy">Comfy Deep</option>
+            <option value="sapphire">ClearVision Sapphire</option>
+          </select>
+        </label>
+        <label class="setting">Font size <span id="font-val">1.0x</span>
+          <input id="set-font" type="range" min="0.9" max="1.6" step="0.05" value="1" />
+        </label>
+        <label class="setting">Font
+          <select id="set-fontfamily">
+            <option value="sans">Inter / system</option>
+            <option value="mono">Monospace</option>
+            <option value="serif">Serif</option>
+          </select>
+        </label>
+        <label class="setting">Density
+          <select id="set-density">
+            <option value="comfortable">Comfortable</option>
+            <option value="compact">Compact</option>
+          </select>
+        </label>
+        <h4>Save source</h4>
+        <label class="setting">Save file path (blank = auto-detect)
+          <input id="set-savepath" type="text" placeholder="auto: Steam / Proton / Waydroid" />
+        </label>
+        <div class="hint">Auto-detect looks for PC saves (Steam/Proton, Windows, macOS) and Android containers (Waydroid/Anbox). For a phone, pull the file first:<br>
+        <code>adb pull /sdcard/Android/data/com.playsaurus.clickerheroes/files/playerSaveData.txt</code></div>
+
+        <h4>Save conversion</h4>
+        <label class="setting">Export format
+          <select id="save-platform">
+            <option value="pc">PC (Steam)</option>
+            <option value="mobile">Mobile (Android/iOS)</option>
+          </select>
+        </label>
+        <button id="btn-export-save">Export current save…</button>
+        <button id="btn-open-save">Open save file…</button>
+        <h4>Load a save (read-only)</h4>
+        <div class="hint">Paste a save to analyse it without touching your game file. It stays active until you press "Back to live save".</div>
+        <button id="btn-use-save">Load pasted save (read-only)</button>
+        <button id="btn-live-save">Back to live save</button>
+
+        <label class="setting">…or paste save data
+          <textarea id="save-text" rows="4" placeholder="paste the 32-char marker + base64 here"></textarea>
+        </label>
+        <label class="setting">Convert to
+          <select id="save-target">
+            <option value="pc">PC (Steam)</option>
+            <option value="mobile">Mobile</option>
+          </select>
+        </label>
+        <button id="btn-convert-save">Convert &amp; export…</button>
+        <button id="btn-install-save" class="danger">Install as live save (writes a backup first)</button>
+        <div id="save-status" class="hint"></div>
+        <label class="setting">Weights
+          <textarea id="set-json" rows="10" spellcheck="false"></textarea>
+        </label>
+        <div class="btnrow">
+          <button id="btn-save-settings">Save settings</button>
+          <button id="btn-reload-save">Reload game save</button>
+          <button id="btn-reset-settings">Reset</button>
+        </div>
+        <div id="set-status" class="hint"></div>
+      </section>
+
+      <section id="tab-help" class="tabpane">
+        <h3>What this is</h3>
+        <p>Reads <code>playerSaveData.txt</code> from your Clicker Heroes install and turns it into a plan. It never writes to the save, never touches the running game, and never needs the internet.</p>
+
+        <h3>The tabs</h3>
+        <p><b>Plan</b> — ordered steps: push/ascend, transcend, ancients, hero, gilds, rubies, progress, mercs. Each step says when, what, and why.</p>
+        <p><b>Ancients</b> — <code>#</code> buy order, <code>Cur</code> current level, <code>Sug</code> suggested level, <code>Diff</code> how many to buy. Greyed rows with <code>skip</code> are useless for your build.</p>
+        <p><b>Heroes</b> — level, cost of the next level, DPS. ✦ marks gilds.</p>
+        <p><b>Mercs</b> — rarity, level, days until death.</p>
+        <p><b>reach</b> — the highest boss your current DPS can kill inside the boss timer, computed from the same monster-HP formula the game uses (including the AS-tier HP scale). It is an estimate: it assumes your current DPS and no extra skills.</p>
+        <p><b>Outsiders</b> — same columns as ancients, spent with Ancient Souls after a transcendence.</p>
+        <p><b>⚙</b> — build (idle/active/hybrid), theme, font size, weight tuning, and a force reload of the save.</p>
+
+        <h3>Keys</h3>
+        <p><code>Ctrl+Shift+M</code> minimise · <code>Ctrl+Shift+H</code> hide/show · <code>Ctrl+Shift+R</code> reload · <code>Ctrl+Shift+Q</code> quit. Drag the title bar to move it.</p>
+
+        <h3>Where the numbers come from</h3>
+        <p>Game formulas ported from dfederm/ClickerHeroesTracker. Progression rules from McNiibot (the official Discord bot). Gilding chart from clickerheroes.dev. Merc quest order re-derived from qubit64's optimisation; revive windows from qubit64 and dukC2.</p>
+
+        <h3>Glossary</h3>
+        <p><b>e-notation (logHS / logGold)</b> — in <code>2.94e39</code> the number after the <code>e</code> is the order of magnitude (39). Always read the exponent first: e39 vs e46 is seven orders, not "a bit more".</p>
+        <p><b>OOM</b> — order of magnitude: one <code>e</code> step.</p>
+        <p><b>MPZ</b> — monsters per zone (10). Fewer monsters per zone means faster zones; speed comes from zone count per hour, not from bigger hits.</p>
+        <p><b>Kappa</b> — rare centurion (boss zone ending in 0), 0.5% on PC, 0.4% mobile, halved during events, only above zone 1000.</p>
+        <p><b>FANT</b> — First Ascension New Transcendence: the run right after a transcendence. 2x damage does nothing here.</p>
+        <p><b>TP / AS / HS / BP</b> — Transcendent Power / Ancient Souls / Hero Souls / breakpoint (see /bp tiers in the Plan).</p>
+        <p><b>AC / QA / TL</b> — Auto Clicker / Quick Ascension / Timelapse.</p>
+
+        <h3>External tools</h3>
+        <p>The community treats macros and external auto-clickers as cheating-adjacent, but nothing enforces it. <b>This app reads your save file only</b> — it never writes to it, never reads game memory, and never injects input. That keeps it a companion, not a cheat.</p>
+
+        <h3>Changelog</h3>
+        <p><b>0.4</b> — light theme, font-size setting, window buttons, this help tab.</p>
+        <p><b>0.3</b> — ancient/outsider suggestions with ranks; gilding chart; merc quest optimiser; settings API.</p>
+        <p><b>0.2</b> — rule-based plan from McNiibot; timeline; save-age footer.</p>
+        <p><b>0.1</b> — save decoder, engine, overlay window.</p>
+      </section>
+
+      <footer class="foot"><span id="stamp">—</span><span id="src" class="muted"></span></footer>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

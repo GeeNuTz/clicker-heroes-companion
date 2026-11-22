@@ -1,0 +1,595 @@
+{
+ "source": "https://clickerheroes.dev/guides/gilding-chart",
+ "rows": [
+  {
+   "n": 1,
+   "hero": "The Masked Samurai",
+   "fromLevel": "1,000-1,500",
+   "toLevel": "2,425",
+   "goldFrom": 35,
+   "goldTo": 77,
+   "as": "10",
+   "notes": "Dread Knight is never optimal to gild. Sources list the start level as either 1,000 or 1,500; either is fine."
+  },
+  {
+   "n": 2,
+   "hero": "Atlas",
+   "fromLevel": "725",
+   "toLevel": "1,500",
+   "goldFrom": 77,
+   "goldTo": 100,
+   "as": "12",
+   "notes": "From here on gold is written as the bare exponent, the number after the \u201ce\u201d."
+  },
+  {
+   "n": 3,
+   "hero": "Terra",
+   "fromLevel": "1,000",
+   "toLevel": "1,500",
+   "goldFrom": 100,
+   "goldTo": 115,
+   "as": "14",
+   "notes": "Most rangers and beasts become optimal at level 1,000."
+  },
+  {
+   "n": 4,
+   "hero": "Phthalo",
+   "fromLevel": "1,000",
+   "toLevel": "1,500",
+   "goldFrom": 115,
+   "goldTo": 130,
+   "as": "17",
+   "notes": "\u2014"
+  },
+  {
+   "n": 5,
+   "hero": "Orntchya Gladeye, Didensy Banana",
+   "fromLevel": "1,000",
+   "toLevel": "1,500",
+   "goldFrom": 130,
+   "goldTo": 145,
+   "as": "20",
+   "notes": "\u2014"
+  },
+  {
+   "n": 6,
+   "hero": "Lilin",
+   "fromLevel": "1,000",
+   "toLevel": "1,500",
+   "goldFrom": 145,
+   "goldTo": 160,
+   "as": "22",
+   "notes": "The pattern by now: hire to 1,000, gild, level to 1,500, move on."
+  },
+  {
+   "n": 7,
+   "hero": "Cadmia",
+   "fromLevel": "1,000",
+   "toLevel": "1,500",
+   "goldFrom": 160,
+   "goldTo": 175,
+   "as": "24",
+   "notes": "\u2014"
+  },
+  {
+   "n": 8,
+   "hero": "Alabaster",
+   "fromLevel": "1,000",
+   "toLevel": "1,500",
+   "goldFrom": 175,
+   "goldTo": 190,
+   "as": "26",
+   "notes": "\u2014"
+  },
+  {
+   "n": 9,
+   "hero": "Astraea",
+   "fromLevel": "1,000",
+   "toLevel": "1,500",
+   "goldFrom": 190,
+   "goldTo": 205,
+   "as": "28",
+   "notes": "\u2014"
+  },
+  {
+   "n": 10,
+   "hero": "Chiron",
+   "fromLevel": "1,000",
+   "toLevel": "1,500",
+   "goldFrom": 205,
+   "goldTo": 220,
+   "as": "31",
+   "notes": "\u2691 At Chiron 1,100, buy Bomber Max to level 100 for his +50% gold found upgrade."
+  },
+  {
+   "n": 11,
+   "hero": "Moloch",
+   "fromLevel": "1,000",
+   "toLevel": "1,500",
+   "goldFrom": 220,
+   "goldTo": 235,
+   "as": "34",
+   "notes": "\u2691 At Moloch 1,100, buy Gog to level 100 for his +50% all-hero DPS upgrade."
+  },
+  {
+   "n": 12,
+   "hero": "Bomber Max",
+   "fromLevel": "1,000",
+   "toLevel": "1,500",
+   "goldFrom": 235,
+   "goldTo": 250,
+   "as": "36",
+   "notes": "\u2014"
+  },
+  {
+   "n": 13,
+   "hero": "Gog",
+   "fromLevel": "1,000",
+   "toLevel": "1,500",
+   "goldFrom": 250,
+   "goldTo": 265,
+   "as": "38",
+   "notes": "\u2014"
+  },
+  {
+   "n": 14,
+   "hero": "Wepwawet",
+   "fromLevel": "1,000",
+   "toLevel": "1,500",
+   "goldFrom": 265,
+   "goldTo": 280,
+   "as": "40",
+   "notes": "From here, gilding follows Wepwawet upgrades."
+  },
+  {
+   "n": 15,
+   "hero": "Betty Clicker",
+   "fromLevel": "9,350",
+   "toLevel": "9,850",
+   "goldFrom": 280,
+   "goldTo": 295,
+   "as": "42",
+   "notes": "Needs the Wepwawet upgrade at level 1,500, which boosts Betty heavily."
+  },
+  {
+   "n": 16,
+   "hero": "King Midas",
+   "fromLevel": "9,575",
+   "toLevel": "12,575",
+   "goldFrom": 295,
+   "goldTo": 383,
+   "as": "44",
+   "notes": "Needs the Wepwawet upgrade at level 2,000. The wiki lists the end level as 13,575."
+  },
+  {
+   "n": 17,
+   "hero": "Wepwawet",
+   "fromLevel": "5,000",
+   "toLevel": "5,500",
+   "goldFrom": 383,
+   "goldTo": 397,
+   "as": "56",
+   "notes": "Wep and Gog now trade off every ~500 levels as each gains a new 10x."
+  },
+  {
+   "n": 18,
+   "hero": "Gog",
+   "fromLevel": "6,000",
+   "toLevel": "6,500",
+   "goldFrom": 397,
+   "goldTo": 412,
+   "as": "59",
+   "notes": "\u2014"
+  },
+  {
+   "n": 19,
+   "hero": "Wepwawet",
+   "fromLevel": "6,000",
+   "toLevel": "6,500",
+   "goldFrom": 412,
+   "goldTo": 427,
+   "as": "61",
+   "notes": "\u2014"
+  },
+  {
+   "n": 20,
+   "hero": "Gog",
+   "fromLevel": "7,000",
+   "toLevel": "7,500",
+   "goldFrom": 427,
+   "goldTo": 442,
+   "as": "63",
+   "notes": "\u2014"
+  },
+  {
+   "n": 21,
+   "hero": "Wepwawet",
+   "fromLevel": "7,000",
+   "toLevel": "9,000",
+   "goldFrom": 442,
+   "goldTo": 500,
+   "as": "65",
+   "notes": "Gog gets no more 10x multipliers after level 8,000, so stay on Wep from here."
+  },
+  {
+   "n": 22,
+   "hero": "Tsuchi",
+   "fromLevel": "1",
+   "toLevel": "16,975",
+   "goldFrom": 500,
+   "goldTo": 1000,
+   "as": "75",
+   "notes": "Hiring Tsuchi at level 1 costs less than 25 more levels of Wepwawet, and is instantly better."
+  },
+  {
+   "n": 23,
+   "hero": "Skogur",
+   "fromLevel": "1",
+   "toLevel": "33,975",
+   "goldFrom": 1000,
+   "goldTo": 2000,
+   "as": "200",
+   "notes": "\u2014"
+  },
+  {
+   "n": 24,
+   "hero": "Moeru",
+   "fromLevel": "1",
+   "toLevel": "68,025",
+   "goldFrom": 2000,
+   "goldTo": 4000,
+   "as": "500",
+   "notes": "\u2014"
+  },
+  {
+   "n": 25,
+   "hero": "Zilar",
+   "fromLevel": "1",
+   "toLevel": "136,075",
+   "goldFrom": 4000,
+   "goldTo": 8000,
+   "as": "1,500",
+   "notes": "\u2014"
+  },
+  {
+   "n": 26,
+   "hero": "Madzi",
+   "fromLevel": "1",
+   "toLevel": "204,175",
+   "goldFrom": 8000,
+   "goldTo": 14000,
+   "as": "2,750",
+   "notes": "\u2014"
+  },
+  {
+   "n": 27,
+   "hero": "Xavira",
+   "fromLevel": "1",
+   "toLevel": "391,375",
+   "goldFrom": 14000,
+   "goldTo": 25500,
+   "as": "6,000",
+   "notes": "Last row with a meaningful Ancient Souls estimate. Past here, use a progression calculator."
+  },
+  {
+   "n": 28,
+   "hero": "Cadu, Tomb Guardian",
+   "fromLevel": "1",
+   "toLevel": "58,000",
+   "goldFrom": 25500,
+   "goldTo": 27204,
+   "as": "\u2014",
+   "notes": "Either Guardian works here. Cadu gets the first upgrade, which boosts Ceus."
+  },
+  {
+   "n": 29,
+   "hero": "Ceus, Tomb Guardian",
+   "fromLevel": "58,000",
+   "toLevel": "116,000",
+   "goldFrom": 27204,
+   "goldTo": 28908,
+   "as": "\u2014",
+   "notes": "At 116,000 Ceus boosts Cadu. The alternating pattern continues from here."
+  },
+  {
+   "n": 30,
+   "hero": "Cadu, Tomb Guardian",
+   "fromLevel": "116,000",
+   "toLevel": "180,000",
+   "goldFrom": 28908,
+   "goldTo": 30789,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 31,
+   "hero": "Ceus, Tomb Guardian",
+   "fromLevel": "180,000",
+   "toLevel": "250,000",
+   "goldFrom": 30789,
+   "goldTo": 32845,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 32,
+   "hero": "Cadu, Tomb Guardian",
+   "fromLevel": "250,000",
+   "toLevel": "326,000",
+   "goldFrom": 32845,
+   "goldTo": 35079,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 33,
+   "hero": "Ceus, Tomb Guardian",
+   "fromLevel": "326,000",
+   "toLevel": "407,500",
+   "goldFrom": 35079,
+   "goldTo": 37473,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 34,
+   "hero": "Cadu, Tomb Guardian",
+   "fromLevel": "407,500",
+   "toLevel": "495,000",
+   "goldFrom": 37473,
+   "goldTo": 40044,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 35,
+   "hero": "Ceus, Tomb Guardian",
+   "fromLevel": "495,000",
+   "toLevel": "588,000",
+   "goldFrom": 40044,
+   "goldTo": 42777,
+   "as": "\u2014",
+   "notes": "The last Ceus upgrade unlocks here. After this, stay on Cadu until The Maw."
+  },
+  {
+   "n": 36,
+   "hero": "Cadu, Tomb Guardian",
+   "fromLevel": "588,000",
+   "toLevel": "680,625",
+   "goldFrom": 42777,
+   "goldTo": 45500,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 37,
+   "hero": "The Maw",
+   "fromLevel": "1",
+   "toLevel": "1,059,350",
+   "goldFrom": 45500,
+   "goldTo": 76628,
+   "as": "\u2014",
+   "notes": "The Maw at level 1 deals roughly 1e6750x the damage of Cadu at 680,625, for the same price."
+  },
+  {
+   "n": 38,
+   "hero": "Yachiyl",
+   "fromLevel": "157,500",
+   "toLevel": "1,253,675",
+   "goldFrom": 76628,
+   "goldTo": 108838,
+   "as": "\u2014",
+   "notes": "Yachiyl does less damage than The Maw until its first upgrade at 157,500, which is why you start it there. Reaching this row means you have beaten 1.0e10."
+  },
+  {
+   "n": 39,
+   "hero": "Rose",
+   "fromLevel": "9,700",
+   "toLevel": "75,250",
+   "goldFrom": 108838,
+   "goldTo": 114500,
+   "as": "\u2014",
+   "notes": "Because of 1.0e11 hero scaling, Rose is not immediately better than Yachiyl. She needs level 9,700."
+  },
+  {
+   "n": 40,
+   "hero": "Sophia",
+   "fromLevel": "1",
+   "toLevel": "150,525",
+   "goldFrom": 114500,
+   "goldTo": 127500,
+   "as": "\u2014",
+   "notes": "Run through each scout with no upgrades first."
+  },
+  {
+   "n": 41,
+   "hero": "Blanche",
+   "fromLevel": "1",
+   "toLevel": "170,200",
+   "goldFrom": 127500,
+   "goldTo": 142200,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 42,
+   "hero": "Dorothy",
+   "fromLevel": "1",
+   "toLevel": "205,975",
+   "goldFrom": 142200,
+   "goldTo": 159989,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 43,
+   "hero": "Rose",
+   "fromLevel": "602,000",
+   "toLevel": "752,500",
+   "goldFrom": 159989,
+   "goldTo": 172987,
+   "as": "\u2014",
+   "notes": "Now start collecting each scout first upgrade. This rotating pattern continues to the end."
+  },
+  {
+   "n": 44,
+   "hero": "Sophia",
+   "fromLevel": "677,250",
+   "toLevel": "903,025",
+   "goldFrom": 172987,
+   "goldTo": 192486,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 45,
+   "hero": "Blanche",
+   "fromLevel": "752,500",
+   "toLevel": "978,200",
+   "goldFrom": 192486,
+   "goldTo": 211977,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 46,
+   "hero": "Rose",
+   "fromLevel": "1,204,000",
+   "toLevel": "1,354,500",
+   "goldFrom": 211977,
+   "goldTo": 224976,
+   "as": "\u2014",
+   "notes": "Skip Dorothy 1: it costs more but deals less damage than Rose 2."
+  },
+  {
+   "n": 47,
+   "hero": "Sophia",
+   "fromLevel": "1,279,250",
+   "toLevel": "1,505,025",
+   "goldFrom": 224976,
+   "goldTo": 244474,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 48,
+   "hero": "Blanche",
+   "fromLevel": "1,354,500",
+   "toLevel": "1,580,200",
+   "goldFrom": 244474,
+   "goldTo": 263966,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 49,
+   "hero": "Rose",
+   "fromLevel": "1,806,000",
+   "toLevel": "1,956,500",
+   "goldFrom": 263966,
+   "goldTo": 276964,
+   "as": "\u2014",
+   "notes": "Skip Dorothy 2, same reason as before."
+  },
+  {
+   "n": 50,
+   "hero": "Sophia",
+   "fromLevel": "1,881,250",
+   "toLevel": "2,107,025",
+   "goldFrom": 276964,
+   "goldTo": 296463,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 51,
+   "hero": "Blanche",
+   "fromLevel": "1,956,500",
+   "toLevel": "2,126,700",
+   "goldFrom": 296463,
+   "goldTo": 311163,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 52,
+   "hero": "Dorothy",
+   "fromLevel": "1,956,500",
+   "toLevel": "2,011,975",
+   "goldFrom": 311163,
+   "goldTo": 315954,
+   "as": "\u2014",
+   "notes": "Dorothy 3 is worth taking, unlike 1 and 2."
+  },
+  {
+   "n": 53,
+   "hero": "Rose",
+   "fromLevel": "2,408,000",
+   "toLevel": "2,558,500",
+   "goldFrom": 315954,
+   "goldTo": 328953,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 54,
+   "hero": "Sophia",
+   "fromLevel": "2,483,250",
+   "toLevel": "2,709,025",
+   "goldFrom": 328953,
+   "goldTo": 348452,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 55,
+   "hero": "Blanche",
+   "fromLevel": "2,558,500",
+   "toLevel": "2,784,200",
+   "goldFrom": 348452,
+   "goldTo": 367943,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 56,
+   "hero": "Rose",
+   "fromLevel": "3,010,000",
+   "toLevel": "3,160,500",
+   "goldFrom": 367943,
+   "goldTo": 380942,
+   "as": "\u2014",
+   "notes": "Skip Dorothy 4, same reason as before."
+  },
+  {
+   "n": 57,
+   "hero": "Sophia",
+   "fromLevel": "3,085,250",
+   "toLevel": "3,311,025",
+   "goldFrom": 380942,
+   "goldTo": 400440,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 58,
+   "hero": "Blanche",
+   "fromLevel": "3,160,500",
+   "toLevel": "3,405,950",
+   "goldFrom": 400440,
+   "goldTo": 421639,
+   "as": "\u2014",
+   "notes": "\u2014"
+  },
+  {
+   "n": 59,
+   "hero": "Dorothy",
+   "fromLevel": "3,235,750",
+   "toLevel": "Forever",
+   "goldFrom": 421639,
+   "goldTo": null,
+   "as": "\u2014",
+   "notes": "End of the tabulated chart."
+  }
+ ]
+}
