@@ -400,12 +400,16 @@ document.getElementById("btn-check-update")?.addEventListener("click", async () 
     return;
   }
   const r = await window.chOverlay.checkUpdate();
-  if (r.ok && r.version) {
-    $("set-status").textContent = `update ${r.version} available — downloading`;
+  if (r.ok && r.status === "downloaded") {
+    $("set-status").textContent = `update ${r.version} downloaded — press "Install update"`;
     return;
   }
-  if (r.ok) {
-    $("set-status").textContent = "already up to date";
+  if (r.ok && (r.status === "available" || r.status === "downloading")) {
+    $("set-status").textContent = `update ${r.version} — downloading in the background`;
+    return;
+  }
+  if (r.ok && r.status === "current") {
+    $("set-status").textContent = `already up to date (v${r.current})`;
     return;
   }
   // Dev checkout: the packaged updater is not present, so point at Releases.

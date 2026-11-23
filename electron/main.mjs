@@ -139,16 +139,33 @@ app.whenReady().then(() => {
   });
   // Auto-update from GitHub Releases (AppImage / exe / dmg builds only).
   autoUpdater.autoDownload = true;
-  autoUpdater.on("update-available", (i) => console.log("update available", i?.version));
-  autoUpdater.on("update-downloaded", (i) => console.log("update downloaded", i?.version));
-  autoUpdater.on("error", (e) => console.log("update error:", e?.message || e));
+  const updateState = { status: "idle", version: null, error: null };
+  autoUpdater.on("checking-for-update", () => { updateState.status = "checking"; });
+  autoUpdater.on("update-available", (i) => {
+    updateState.status = "available"; updateState.version = i?.version ?? null;
+  });
+  autoUpdater.on("update-not-available", () => { updateState.status = "current"; });
+  autoUpdater.on("download-progress", () => { if (updateState.status === "available") updateState.status = "downloading"; });
+  autoUpdater.on("update-downloaded", (i) => {
+    updateState.status = "downloaded"; updateState.version = i?.version ?? null;
+  });
+  autoUpdater.on("error", (e) => {
+    updateState.status = "error"; updateState.error = String(e?.message || e);
+  });
   ipcMain.handle("update:check", async () => {
+    updateState.status = "checking";
+    updateState.error = null;
     try {
-      const r = await autoUpdater.checkForUpdates();
-      return { ok: true, version: r?.updateInfo?.version ?? null };
+      await autoUpdater.checkForUpdates();
     } catch (err) {
-      return { ok: false, error: String(err?.message || err) };
+      updateState.status = "error";
+      updateState.error = String(err?.message || err);
     }
+    const deadline = Date.now() + 12000;
+    while (["checking", "available", "downloading"].includes(updateState.status) && Date.now() < deadline) {
+      await new Promise((r) => setTimeout(r, 300));
+    }
+    return { ok: updateState.status !== "error", ...updateState, current: app.getVersion() };
   });
   ipcMain.handle("update:install", async () => {
     try {
