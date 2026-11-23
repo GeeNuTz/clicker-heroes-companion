@@ -212,7 +212,14 @@
         <p>The community treats macros and external auto-clickers as cheating-adjacent, but nothing enforces it. <b>This app reads your save file only</b> — it never writes to it, never reads game memory, and never injects input. That keeps it a companion, not a cheat.</p>
 
         <h3>Changelog</h3>
-        <p><b>0.6.1</b> — max-zone label fixed to "current DPS"; duplicate removed.</p>
+        <p><b>0.6.8</b> — fixed a crash on launch (electron-updater is CommonJS; the named ESM import threw before the window existed).</p>
+        <p><b>0.6.7</b> — update button falls back to the release page in a dev checkout.</p>
+        <p><b>0.6.6</b> — auto-update: electron-updater, Check/Install buttons, latest*.yml manifests.</p>
+        <p><b>0.6.5</b> — hero advice names the next x10 milestone instead of "(x10 at each 1000)".</p>
+        <p><b>0.6.4</b> — cross-platform CI: first Windows and macOS builds; version matches the tag.</p>
+        <p><b>0.6.3</b> — CI workflow, release permissions, assets attached per platform.</p>
+        <p><b>0.6.2</b> — CI path fixes (no release published).</p>
+        <p><b>0.6.1</b> — pasted-save load, relic totals, MAX ZONE card, dead mercs, gild formula.</p>
         <p><b>0.6.0</b> — load a pasted save read-only; dead mercs detected; relic totals; Gilds/Relics tabs.</p>
         <p><b>0.5.0</b> — renamed to Clicker Heroes Companion; plan ordered by action; gild bonus from the tooltip.</p>
         <p><b>0.4</b> — light theme, font-size setting, window buttons, this help tab.</p>
