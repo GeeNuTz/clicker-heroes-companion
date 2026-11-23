@@ -12,7 +12,6 @@ import { buildState } from "./engine.mjs";
 import { advise } from "./advice.mjs";
 import { ancientSuggestions, outsiderSuggestions, loadSettings } from "./suggest.mjs";
 import { readFileSync, writeFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
