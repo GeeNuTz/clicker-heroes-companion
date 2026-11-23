@@ -20,7 +20,8 @@ export const DEFAULT_SETTINGS = {
   density: "comfortable", // comfortable | compact
   savePath: "", // explicit save file (blank = auto-detect Steam/PC)
   lastTranscensionSouls: 0,
-  ascensionLog: "", // CSV pasted from the game's Ascensions window (Export) // HS your previous transcension ended with (0 = unknown)
+  ascensionLog: "",
+  transcensionLog: "", // CSV from the game's Transcensions → Export // CSV pasted from the game's Ascensions window (Export) // HS your previous transcension ended with (0 = unknown)
   fontScale: 1.15, // 0.9 - 1.6, applied as page zoom
   weights: {
     // idle core

@@ -13,8 +13,13 @@ import { ancientSuggestions, DEFAULT_SETTINGS } from "./suggest.mjs";
 const D = (v) => new Decimal(v ?? 0);
 const POWER_HEROES = [2, 3, 4, 7, 9]; // Treebeast, Ivan, Brittany, Samurai, Forest Seer
 
-export function advise(state, { settings = null, ascensions = null } = {}) {
-  state = { ...state, ...(settings ? { settings } : {}), ...(ascensions ? { ascensions } : {}) };
+export function advise(state, { settings = null, ascensions = null, transcensions = null } = {}) {
+  state = {
+    ...state,
+    ...(settings ? { settings } : {}),
+    ...(ascensions ? { ascensions } : {}),
+    ...(transcensions ? { transcensions } : {}),
+  };
   const timeline = [];
   const warnings = [];
   const gold = D(state.resources.gold);

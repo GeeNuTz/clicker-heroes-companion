@@ -119,7 +119,11 @@ export function transcendenceRule(state) {
   if (tp >= RULES.tpUseCalculator) {
     return { ready: null, reason: `TP is ${tp.toFixed(1)}% — past the bot's ~${RULES.tpUseCalculator}% cutoff, use the outsider calculator from here.` };
   }
-  const lastHS = Number(state.settings?.lastTranscensionSouls ?? 0);
+  // Prefer the exported transcension log: the last completed transcension is
+  // the second-to-last row (the final row is the run you are in).
+  const tlog = Array.isArray(state.transcensions) ? state.transcensions : [];
+  const lastCompleted = tlog.length >= 2 ? tlog[tlog.length - 2] : null;
+  const lastHS = lastCompleted ? Number(lastCompleted.hs) : Number(state.settings?.lastTranscensionSouls ?? 0);
   const log = Array.isArray(state.ascensions) ? state.ascensions : [];
   const bestPayout = log.reduce((m, a) => Math.max(m, a.hs || 0), 0);
   const curHS = bestPayout || Number(state.resources?.heroSouls ?? 0);
