@@ -119,6 +119,19 @@ export function transcendenceRule(state) {
   if (tp >= RULES.tpUseCalculator) {
     return { ready: null, reason: `TP is ${tp.toFixed(1)}% — past the bot's ~${RULES.tpUseCalculator}% cutoff, use the outsider calculator from here.` };
   }
+  const lastHS = Number(state.settings?.lastTranscensionSouls ?? 0);
+  const curHS = Number(state.resources?.heroSouls ?? 0);
+  if (lastHS > 0) {
+    const beats = curHS > lastHS;
+    return {
+      ready: true,
+      reason:
+        `TP ${tp.toFixed(1)}%. Last transcension ended with ${lastHS.toLocaleString()} HS; you hold ${curHS.toLocaleString()} — ` +
+        (beats
+          ? "you are past the marker, so count 3 more ascensions and transcend."
+          : `${(lastHS - curHS).toLocaleString()} to go before the marker.`),
+    };
+  }
   return {
     ready: true,
     reason:

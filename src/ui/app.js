@@ -336,6 +336,7 @@ async function loadSettingsPanel() {
     $("set-build").value = s.build || "idle";
     if ($("set-theme")) $("set-theme").value = s.theme || "dark";
     if ($("set-savepath")) $("set-savepath").value = s.savePath || "";
+    if ($("set-lasttrans")) $("set-lasttrans").value = s.lastTranscensionSouls || 0;
     if ($("set-fontfamily")) $("set-fontfamily").value = s.fontFamily || "sans";
     if ($("set-density")) $("set-density").value = s.density || "comfortable";
     if ($("set-font")) { $("set-font").value = s.fontScale || 1; $("font-val").textContent = (s.fontScale || 1).toFixed(2) + "x"; }
@@ -358,6 +359,7 @@ document.getElementById("btn-save-settings").addEventListener("click", async () 
     body.theme = $("set-theme").value;
     body.fontFamily = $("set-fontfamily").value;
     body.savePath = ($("set-savepath").value || "").trim();
+    body.lastTranscensionSouls = Number($("set-lasttrans").value || 0);
     body.density = $("set-density").value;
     body.fontScale = Number($("set-font").value);
     const r = await fetch("/api/settings", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
