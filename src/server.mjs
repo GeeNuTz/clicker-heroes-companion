@@ -12,6 +12,8 @@ import { buildState } from "./engine.mjs";
 import { advise } from "./advice.mjs";
 import { ancientSuggestions, outsiderSuggestions, loadSettings } from "./suggest.mjs";
 import { readFileSync, writeFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const UI = path.join(HERE, "ui");
@@ -57,10 +59,18 @@ function parseAscensionCsv(csv) {
 
 /** Last N versions from CHANGELOG.md — the single source for the in-app list. */
 function readChangelog(n = 5) {
+  // Inside a packaged app the file lives in app.asar; URL objects do not always
+  // go through Electron's asar layer, so try plain paths too.
+  const candidates = [
+    fileURLToPath(new URL("../CHANGELOG.md", import.meta.url)),
+    join(process.resourcesPath || "", "app.asar", "CHANGELOG.md"),
+    join(process.cwd(), "CHANGELOG.md"),
+  ];
   let md = "";
-  try {
-    md = readFileSync(new URL("../CHANGELOG.md", import.meta.url), "utf8");
-  } catch { return []; }
+  for (const c of candidates) {
+    try { md = readFileSync(c, "utf8"); if (md) break; } catch { /* next */ }
+  }
+  if (!md) return [];
   const out = [];
   const parts = md.split(/^## /m).slice(1);
   for (const part of parts) {
