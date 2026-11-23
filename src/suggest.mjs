@@ -19,7 +19,8 @@ export const DEFAULT_SETTINGS = {
   fontFamily: "sans", // sans | mono | serif
   density: "comfortable", // comfortable | compact
   savePath: "", // explicit save file (blank = auto-detect Steam/PC)
-  lastTranscensionSouls: 0, // HS your previous transcension ended with (0 = unknown)
+  lastTranscensionSouls: 0,
+  ascensionLog: "", // CSV pasted from the game's Ascensions window (Export) // HS your previous transcension ended with (0 = unknown)
   fontScale: 1.15, // 0.9 - 1.6, applied as page zoom
   weights: {
     // idle core

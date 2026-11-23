@@ -30,6 +30,18 @@ const clients = new Set();
 let overrideSave = null;
 let overrideLabel = null;
 
+/** Parse the CSV exported by the game's Ascensions window. */
+function parseAscensionCsv(csv) {
+  const rows = [];
+  for (const line of String(csv || "").split(/\r?\n/)) {
+    const m = line.match(/^\s*(\d+)\s*,\s*([0-9:]+)\s*,\s*(\d+)\s*,\s*([0-9.]+)([KM]?)\s*$/);
+    if (!m) continue;
+    const mult = m[5] === "K" ? 1e3 : m[5] === "M" ? 1e6 : 1;
+    rows.push({ n: Number(m[1]), duration: m[2], hze: Number(m[3]), hs: Number(m[4]) * mult });
+  }
+  return rows;
+}
+
 async function snapshot() {
   let save, p, mtimeMs;
   if (overrideSave) {
@@ -40,9 +52,10 @@ async function snapshot() {
     ({ save, path: p, mtimeMs } = await readSave(loadSettings().savePath || null));
   }
   const state = buildState(save, { now: Date.now() });
-  const advice = advise(state, { settings: loadSettings() });
+  const advice = advise(state, { settings: loadSettings(), ascensions: parseAscensionCsv(loadSettings().ascensionLog) });
   const settings = loadSettings();
   const version = APP_VERSION;
+  const ascensions = parseAscensionCsv(settings.ascensionLog);
   const always = {
     version,
     settings: { theme: settings.theme || "dark", fontScale: settings.fontScale || 1, build: settings.build, fontFamily: settings.fontFamily || "sans", density: settings.density || "comfortable" },

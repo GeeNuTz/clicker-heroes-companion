@@ -47,7 +47,7 @@
         <button data-tab="settings">⚙</button>
       </nav>
 
-      <section id="tab-plan" class="tabpane active"><ol id="plan" class="timeline"></ol></section>
+      <section id="tab-plan" class="tabpane active"><div class="hint" id="asc-summary"></div><ol id="plan" class="timeline"></ol></section>
 
       <section id="tab-ancients" class="tabpane">
         <div class="hint" id="ancients-hint">Next = hero souls for the next level (Chor'gorloth discount already applied).</div>
@@ -138,6 +138,9 @@
         <label class="setting">HS your last transcension ended with (0 = unknown)
           <input id="set-lasttrans" type="number" min="0" step="1" value="0" />
         </label>
+        <h4>Ascension log</h4>
+        <div class="hint">In game: Ascensions → <b>Export</b>. Paste the CSV here to show history and compute payouts.</div>
+        <textarea id="set-asclog" rows="4" placeholder="Ascension #,Duration H:M:S,HZE,HS Gained"></textarea>
         <h4>Save source</h4>
         <label class="setting">Save file path (blank = auto-detect)
           <input id="set-savepath" type="text" placeholder="auto: Steam / Proton / Waydroid" />

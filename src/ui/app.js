@@ -235,6 +235,14 @@ function render(payload) {
       .catch(() => {});
   }
 
+  const asc = payload.ascensions || [];
+  const sum = $("asc-summary");
+  if (sum) {
+    sum.textContent = asc.length
+      ? `Ascension log: ${asc.length} rows · last #${asc[asc.length - 1].n} HZE ${asc[asc.length - 1].hze} (+${asc[asc.length - 1].hs.toLocaleString()}) · best HZE ${Math.max(...asc.map((a) => a.hze))}`
+      : "No ascension log yet — game: Ascensions → Export, paste the CSV in Settings.";
+  }
+
   const age = payload.saveAgeSeconds;
   $("stamp").textContent = age == null
     ? new Date(payload.at).toLocaleTimeString()
@@ -337,6 +345,7 @@ async function loadSettingsPanel() {
     if ($("set-theme")) $("set-theme").value = s.theme || "dark";
     if ($("set-savepath")) $("set-savepath").value = s.savePath || "";
     if ($("set-lasttrans")) $("set-lasttrans").value = s.lastTranscensionSouls || 0;
+    if ($("set-asclog")) $("set-asclog").value = s.ascensionLog || "";
     if ($("set-fontfamily")) $("set-fontfamily").value = s.fontFamily || "sans";
     if ($("set-density")) $("set-density").value = s.density || "comfortable";
     if ($("set-font")) { $("set-font").value = s.fontScale || 1; $("font-val").textContent = (s.fontScale || 1).toFixed(2) + "x"; }
@@ -360,6 +369,7 @@ document.getElementById("btn-save-settings").addEventListener("click", async () 
     body.fontFamily = $("set-fontfamily").value;
     body.savePath = ($("set-savepath").value || "").trim();
     body.lastTranscensionSouls = Number($("set-lasttrans").value || 0);
+    body.ascensionLog = ($("set-asclog").value || "").trim();
     body.density = $("set-density").value;
     body.fontScale = Number($("set-font").value);
     const r = await fetch("/api/settings", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
