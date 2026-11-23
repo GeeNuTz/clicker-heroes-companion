@@ -1,47 +1,64 @@
 # Changelog
 
-## 0.6.0 — 2026-11-22
-- Load a pasted save read-only (`/api/save/use`), and return to the live save with one click.
-- Mercenaries: dead state read from `questResult` (was showing a countdown for dead mercs).
-- Gild bonus from the in-game tooltip (+2% per Argaiv level); Heroes tab shows count and %.
-- Plan ordered by when you act; merc advice moved to the Mercs tab.
-- Relic bonuses mapped to the ancients that use them.
-- Windows/macOS icon config, app icon, launcher WM_CLASS.
+## 0.7.5 — 2026-11-23
 
-## 0.5.0 — 2026-11-22
-- Renamed to **Clicker Heroes Companion**.
-- Tabs: Gilds and Relics added; Ancients/Outsiders with ranks; Help tab.
-- Gild bonus corrected from the in-game tooltip: +2% per Argaiv level (172% at 61).
-- Relic bonuses mapped to the ancients that use them.
-- Mercs: quest countdown, rarity names, humanised death timer, advice moved into the tab.
-- Plan ordered by when you act; transcend labelled by its real condition.
-- Breakpoint step separates TP tier from the zone where HP scaling starts.
-- Save conversion: export PC/mobile, import, install with backup; the game must be
-  closed first and the app offers to close it.
-- Fresh-run handling (zone 1, 0 DPS) no longer says "ascend".
-- Perf: ancient solver bounded to 250 ms (was 20 s and froze the server).
-- Cross-platform save discovery (Steam/Proton, Windows, macOS, Waydroid) + custom path.
-- Window: real zoom, pinned footer, floating level, real minimise via IPC.
+### Fixed
+- CI: the release-upload step ran under PowerShell on Windows and killed the job, so Windows and macOS assets were missing since 0.7.0. It now runs bash.
 
-## 0.4 — 2026-11-22
-- Light theme, page zoom (font size) setting.
-- Window buttons: reload, minimise (real `win.minimize()` via IPC), close.
-- Help tab: what every panel shows, keys, data sources, changelog.
-- Outsiders: rank column and an explicit note about unspent Ancient Souls.
-- Footer text enlarged.
+## 0.7.4 — 2026-11-23
 
-## 0.3 — 2026-11-22
-- Ancient + outsider suggestions (current / suggested / diff) with buy rank.
-- Gilding chart from clickerheroes.dev, keyed on gold exponent.
-- Mercenary quest order re-derived from qubit64's optimisation (1.0934 rubies/day).
-- Revive windows: qubit64 (narrow) and dukC2 (rarity table, HS vs ruby focus).
-- `settings.json` + `/api/settings` + `/api/reload`.
+### Changed
+- Settings: progression and log fields grouped into one labelled section.
 
-## 0.2 — 2026-11-22
-- Plan rewritten around McNiibot's rules (ascend 130 / boss failure, Siya+Lib pre-300,
-  transcend at 300, 3-ascension cycle).
-- Timeline view with ETAs; save-age footer; wider window.
+### Fixed
+- CSV header matching ignores BOM, case and a plural "s".
 
-## 0.1 — 2026-11-22
-- Save decoder (`marker + base64 + raw deflate`), game maths ported from
-  ClickerHeroesTracker, live state, minimal overlay.
+## 0.7.3 — 2026-11-23
+
+### Added
+- The game's Export buttons put a CSV on the clipboard; the app imports it automatically within 3 s.
+
+## 0.7.2 — 2026-11-23
+
+### Added
+- Transcension log import; the transcend marker derives the last completed transcension automatically.
+
+## 0.7.1 — 2026-11-23
+
+### Added
+- Ascension log import; the marker compares your best payout instead of reciting the rule.
+
+## 0.7.0 — 2026-11-23
+
+### Added
+- Progression setting for the last transcension's HS (fallback when no export exists).
+
+## 0.6.9 — 2026-11-23
+
+### Fixed
+- In-app changelog stopped at 0.6.1; now covers every release.
+
+## 0.6.8 — 2026-11-23
+
+### Fixed
+- App crashed on launch: `electron-updater` is CommonJS and the named ESM import threw before the window existed.
+
+## 0.6.7 — 2026-11-23
+
+### Fixed
+- Update button in a dev checkout now falls back to the release page.
+
+## 0.6.6 — 2026-11-23
+
+### Added
+- Auto-update via `electron-updater`; Check/Install buttons; `latest*.yml` manifests.
+
+## 0.6.5 — 2026-11-23
+
+### Fixed
+- Hero advice names the next x10 milestone instead of "(x10 at each 1000)".
+
+## 0.6.4 — 2026-11-23
+
+### Fixed
+- Windows test failure: `path.isAbsolute` instead of a POSIX-only check.

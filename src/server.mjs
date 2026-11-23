@@ -55,6 +55,25 @@ function parseAscensionCsv(csv) {
   return rows;
 }
 
+/** Last N versions from CHANGELOG.md — the single source for the in-app list. */
+function readChangelog(n = 5) {
+  let md = "";
+  try {
+    md = readFileSync(new URL("../CHANGELOG.md", import.meta.url), "utf8");
+  } catch { return []; }
+  const out = [];
+  const parts = md.split(/^## /m).slice(1);
+  for (const part of parts) {
+    const [head, ...rest] = part.split("\n");
+    const m = head.match(/^([0-9][\w.]*)\s*(?:—|-)\s*(.+)$/);
+    if (!m) continue;
+    const bullets = rest.filter((l) => /^- /.test(l.trim())).map((l) => l.trim().replace(/^- /, ""));
+    out.push({ version: m[1], date: m[2].trim(), bullets });
+    if (out.length >= n) break;
+  }
+  return out;
+}
+
 async function snapshot() {
   let save, p, mtimeMs;
   if (overrideSave) {

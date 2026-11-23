@@ -235,6 +235,14 @@ function render(payload) {
       .catch(() => {});
   }
 
+  const cl = payload.changelog || [];
+  const clBox = $("changelog");
+  if (clBox) {
+    clBox.innerHTML = cl.length
+      ? cl.map((c) => `<p><b>${c.version}</b> — ${c.bullets.join(" ")}</p>`).join("")
+      : '<p class="muted">changelog unavailable</p>';
+  }
+
   const asc = payload.ascensions || [];
   const sum = $("asc-summary");
   if (sum) {
