@@ -415,9 +415,10 @@ document.getElementById("btn-check-update")?.addEventListener("click", async () 
   // Dev checkout: the packaged updater is not present, so point at Releases.
   try {
     const rel = await (await fetch("https://api.github.com/repos/GeeNuTz/clicker-heroes-companion/releases/latest")).json();
+    const why = r.error ? ` — ${r.error}` : "";
     $("set-status").innerHTML = rel?.tag_name
-      ? `latest release ${rel.tag_name} — <a href="${rel.html_url}" target="_blank" style="color:var(--accent)">download</a> (dev copies update with bin/ch-update)`
-      : "update check failed: " + r.error;
+      ? `self-update failed${why} · <a href="${rel.html_url}" target="_blank" style="color:var(--accent)">latest release ${rel.tag_name}</a>`
+      : "update check failed" + why;
   } catch {
     $("set-status").textContent = "update check failed: " + r.error;
   }
