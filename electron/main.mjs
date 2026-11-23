@@ -22,6 +22,11 @@ if (process.env.CH_OVERLAY_WAYLAND === "1") {
 app.disableHardwareAcceleration();
 
 app.setName("clicker-heroes-companion");
+
+// One window only: a second launch must not fight for the server port.
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+}
 // WM_CLASS must match StartupWMClass in the .desktop file, otherwise the
 // taskbar shows a generic icon even though the app has one.
 app.commandLine.appendSwitch("class", "clicker-heroes-companion");

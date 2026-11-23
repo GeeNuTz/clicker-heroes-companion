@@ -406,6 +406,14 @@ function watchGameExports() {
   }, 3000);
 }
 
+server.on("error", (err) => {
+  if (err && err.code === "EADDRINUSE") {
+    console.log(`another Clicker Heroes Companion is already serving ${HOST}:${PORT} — this instance will not start a second server`);
+    return;
+  }
+  throw err;
+});
+
 server.listen(PORT, HOST, () => {
   console.log(`overlay: http://${HOST}:${PORT}`);
   const path = findSave();
