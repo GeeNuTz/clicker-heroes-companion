@@ -105,7 +105,7 @@ it with `fs.watchFile` (200 ms) plus a 2 s fallback poll, and re-decodes only wh
 `save Ns old` — if that climbs past ~2 minutes the game is paused or not
 writing, and the panel says so instead of pretending.
 
-The window is Electron with `alwaysOnTop` at screen-saver level; it stays above
+The window is Electron with `alwaysOnTop` at the `floating` level; it stays above
 normal windows. A game in true fullscreen can still cover it — run the game
 windowed/borderless, or add a KWin rule for the `Clicker Heroes Companion` window.
 
