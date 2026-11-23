@@ -100,6 +100,16 @@ Keys: `Ctrl+Shift+M` minimise · `Ctrl+Shift+H` hide/show · `Ctrl+Shift+R` relo
 
 Back to the live save after loading a pasted one: **Settings → Back to live save**.
 
+## Ascension / Transcension logs
+
+Both windows in the game have an **Export** button; it copies a CSV to the clipboard.
+The app watches the clipboard (every 3 s) and imports it automatically — no paste, no
+file picking. You can also paste the CSV in Settings.
+
+With both logs present the transcend marker is fully automatic: it reads the last
+completed transcension's HS from the transcension log and compares it with your best
+payout from the ascension log.
+
 ## Where the numbers come from
 
 **The save file, not the screen.** No OCR, no memory reading. The game writes

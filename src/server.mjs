@@ -4,6 +4,7 @@ import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { execFileSync } from "node:child_process";
 import { convertSave, decodeSave, encodeSave, findSave, readSave } from "./save.mjs";
 import { closeGame, gamePids, isGameRunning } from "./gameproc.mjs";
 const APP_VERSION = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version;
@@ -338,6 +339,45 @@ function json(res, code, obj) {
   res.end(body);
 }
 
+/**
+ * The game's Ascensions / Transcensions windows have an Export button that puts
+ * a CSV on the clipboard. Watching the clipboard picks it up with no paste and
+ * no memory reading.
+ */
+function watchGameExports() {
+  let last = "";
+  setInterval(() => {
+    let clip = "";
+    try {
+      clip = execFileSync("wl-paste", ["-n"], { encoding: "utf8", timeout: 1500 });
+    } catch {
+      return;
+    }
+    if (!clip || clip === last) return;
+    last = clip;
+    const first = clip.split(/\r?\n/)[0] || "";
+    const file = process.env.CH_SETTINGS_FILE || new URL("../settings.json", import.meta.url);
+    try {
+      const current = loadSettings();
+      let changed = false;
+      if (/^Ascension #,/.test(first) && clip !== current.ascensionLog) {
+        current.ascensionLog = clip.trim();
+        changed = true;
+        console.log("clipboard: ascension log imported");
+      } else if (/^Transcension #,/.test(first) && clip !== current.transcensionLog) {
+        current.transcensionLog = clip.trim();
+        changed = true;
+        console.log("clipboard: transcension log imported");
+      }
+      if (changed) {
+        writeFileSync(file, JSON.stringify(current, null, 2));
+        lastMtime = 0;
+        tick();
+      }
+    } catch { /* settings not writable: ignore */ }
+  }, 3000);
+}
+
 server.listen(PORT, HOST, () => {
   console.log(`overlay: http://${HOST}:${PORT}`);
   const path = findSave();
@@ -353,6 +393,7 @@ server.listen(PORT, HOST, () => {
     });
   }
   setInterval(tick, POLL_MS);
+  watchGameExports();
   // Heartbeat keeps the SSE connection alive and lets the UI detect a stall.
   setInterval(() => broadcast({ type: "ping", at: Date.now() }), 10000);
 });
