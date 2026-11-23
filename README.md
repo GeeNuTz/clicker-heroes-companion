@@ -101,7 +101,7 @@ Back to the live save after loading a pasted one: **Settings → Back to live sa
 
 **The save file, not the screen.** No OCR, no memory reading. The game writes
 `playerSaveData.txt` as you play (typically every few seconds); the panel polls
-its mtime every 1.5s and re-decodes only when it changes. The footer shows
+it with `fs.watchFile` (200 ms) plus a 2 s fallback poll, and re-decodes only when it changes. The footer shows
 `save Ns old` — if that climbs past ~2 minutes the game is paused or not
 writing, and the panel says so instead of pretending.
 
