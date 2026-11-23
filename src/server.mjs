@@ -355,16 +355,16 @@ function watchGameExports() {
     }
     if (!clip || clip === last) return;
     last = clip;
-    const first = clip.split(/\r?\n/)[0] || "";
+    const first = (clip.replace(/^\uFEFF/, "").split(/\r?\n/)[0] || "").trim();
     const file = process.env.CH_SETTINGS_FILE || new URL("../settings.json", import.meta.url);
     try {
       const current = loadSettings();
       let changed = false;
-      if (/^Ascension #,/.test(first) && clip !== current.ascensionLog) {
+      if (/^Ascensions?\s*#/i.test(first) && clip.trim() !== current.ascensionLog) {
         current.ascensionLog = clip.trim();
         changed = true;
         console.log("clipboard: ascension log imported");
-      } else if (/^Transcension #,/.test(first) && clip !== current.transcensionLog) {
+      } else if (/^Transcensions?\s*#/i.test(first) && clip.trim() !== current.transcensionLog) {
         current.transcensionLog = clip.trim();
         changed = true;
         console.log("clipboard: transcension log imported");

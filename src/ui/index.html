@@ -134,15 +134,18 @@
             <option value="compact">Compact</option>
           </select>
         </label>
-        <h4>Progression</h4>
-        <label class="setting">HS your last transcension ended with (0 = unknown)
+        <h4>Progression &amp; logs</h4>
+        <label class="setting">Last transcension HS (only if you have no transcension export)
           <input id="set-lasttrans" type="number" min="0" step="1" value="0" />
         </label>
-        <h4>Ascension log</h4>
-        <div class="hint">In game: Ascensions → <b>Export</b>. The app watches the clipboard and imports it automatically; you can also paste it here.</div>
-        <textarea id="set-asclog" rows="4" placeholder="Ascension #,Duration H:M:S,HZE,HS Gained"></textarea>
-        <div class="hint">And from the Transcensions window → <b>Export</b> (gives the last transcension's total, so the marker needs no manual number):</div>
-        <textarea id="set-trlog" rows="3" placeholder="Transcension #,Duration H:M:S,HZE,HS Gained,Ascensions"></textarea>
+        <div class="hint">Both windows in the game have <b>Export</b>: it copies a CSV to the clipboard and the app imports it within 3 s. You can also paste below.</div>
+        <label class="setting">Ascension log (Ascensions → Export)
+          <textarea id="set-asclog" rows="4" placeholder="Ascension #,Duration H:M:S,HZE,HS Gained"></textarea>
+        </label>
+        <label class="setting">Transcension log (Transcensions → Export)
+          <textarea id="set-trlog" rows="3" placeholder="Transcension #,Duration H:M:S,HZE,HS Gained,Ascensions"></textarea>
+        </label>
+
         <h4>Save source</h4>
         <label class="setting">Save file path (blank = auto-detect)
           <input id="set-savepath" type="text" placeholder="auto: Steam / Proton / Waydroid" />
