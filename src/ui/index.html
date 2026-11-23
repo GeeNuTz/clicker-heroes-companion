@@ -187,11 +187,12 @@
         <h3>The tabs</h3>
         <p><b>Plan</b> — ordered steps: push/ascend, transcend, ancients, hero, gilds, rubies, progress, mercs. Each step says when, what, and why.</p>
         <p><b>Ancients</b> — <code>#</code> buy order, <code>Cur</code> current level, <code>Sug</code> suggested level, <code>Diff</code> how many to buy. Greyed rows with <code>skip</code> are useless for your build.</p>
-        <p><b>Heroes</b> — level, cost of the next level, DPS. ✦ marks gilds.</p>
-        <p><b>Mercs</b> — rarity, level, days until death.</p>
-        <p><b>reach</b> — the highest boss your current DPS can kill inside the boss timer, computed from the same monster-HP formula the game uses (including the AS-tier HP scale). It is an estimate: it assumes your current DPS and no extra skills.</p>
-        <p><b>Outsiders</b> — same columns as ancients, spent with Ancient Souls after a transcendence.</p>
-        <p><b>⚙</b> — build (idle/active/hybrid), theme, font size, weight tuning, and a force reload of the save.</p>
+        <p><b>Heroes</b> — game order by default, sortable by DPS, cost, level or gilds. <code>+N</code> after a name is the gild count; the Gild column is the damage bonus.</p>
+        <p><b>Mercs</b> — quest countdown, rarity, level, and the save's death timer. Dead mercs show <b>failed / dead</b> (detected from <code>questResult</code>).</p>
+        <p><b>Outsiders</b> — same columns as ancients; bought with Ancient Souls after a transcendence.</p>
+        <p><b>Gilds</b> — which hero holds them, the bonus they give (50% + 2% per Argaiv level), and DPS share.</p>
+        <p><b>Relics</b> — only the bonuses your ancients actually use, with the computed amount.</p>
+        <p><b>?</b> — this page. <b>⚙</b> — build, theme, font size/family/density, save source, save conversion, weights, updates.</p>
 
         <h3>Keys</h3>
         <p><code>Ctrl+Shift+M</code> minimise · <code>Ctrl+Shift+H</code> hide/show · <code>Ctrl+Shift+R</code> reload · <code>Ctrl+Shift+Q</code> quit. Drag the title bar to move it.</p>
