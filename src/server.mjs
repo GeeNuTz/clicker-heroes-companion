@@ -280,6 +280,11 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (url.pathname === "/api/update/check") {
+    const fn = globalThis.__chCheckUpdate;
+    return json(res, 200, fn ? await fn() : { ok: false, error: "updater not initialised" });
+  }
+
   if (url.pathname === "/api/settings") {
     const file = process.env.CH_SETTINGS_FILE || new URL("../settings.json", import.meta.url);
     if (req.method === "GET") {
@@ -406,9 +411,16 @@ function watchGameExports() {
   }, 3000);
 }
 
+let listenAttempts = 0;
 server.on("error", (err) => {
+  if (err && err.code === "EADDRINUSE" && listenAttempts < 10) {
+    listenAttempts += 1;
+    // A previous instance may still be exiting; retry briefly instead of dying.
+    setTimeout(() => server.listen(PORT, HOST), 800);
+    return;
+  }
   if (err && err.code === "EADDRINUSE") {
-    console.log(`another Clicker Heroes Companion is already serving ${HOST}:${PORT} — this instance will not start a second server`);
+    console.log(`port ${HOST}:${PORT} is held by another process — the panel will stay empty`);
     return;
   }
   throw err;

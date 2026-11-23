@@ -157,6 +157,20 @@ app.whenReady().then(() => {
   autoUpdater.on("error", (e) => {
     updateState.status = "error"; updateState.error = String(e?.message || e);
   });
+  globalThis.__chCheckUpdate = async () => {
+    updateState.status = "checking";
+    updateState.error = null;
+    try { await autoUpdater.checkForUpdates(); } catch (err) {
+      updateState.status = "error";
+      updateState.error = String(err?.message || err);
+    }
+    const deadline = Date.now() + 12000;
+    while (["checking", "available", "downloading"].includes(updateState.status) && Date.now() < deadline) {
+      await new Promise((r) => setTimeout(r, 300));
+    }
+    return { ok: updateState.status !== "error", ...updateState, current: app.getVersion() };
+  };
+
   ipcMain.handle("update:check", async () => {
     updateState.status = "checking";
     updateState.error = null;
