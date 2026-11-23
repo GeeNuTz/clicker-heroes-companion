@@ -52,40 +52,50 @@ npm run app        # launches the Electron window (server starts inside it)
 Requires Node 20+ and a Clicker Heroes install. `npm start` runs the server alone at
 `http://127.0.0.1:8787` if you prefer a browser.
 
-## Build installers (Windows / macOS / Linux)
+## Download
+
+Take the installer for your platform from the
+**[latest release](https://github.com/GeeNuTz/clicker-heroes-companion/releases/latest)**:
+
+| Platform | File |
+|---|---|
+| Linux | `Clicker.Heroes.Companion-<version>.AppImage` |
+| Windows | `Clicker.Heroes.Companion.Setup.<version>.exe` |
+| macOS | `Clicker.Heroes.Companion-<version>-arm64.dmg` |
+
+Installed builds update themselves: **Settings → Check for updates → Install update**.
+The `latest*.yml` manifests in each release are what the updater reads.
+
+The builds are unsigned, so Windows SmartScreen and macOS Gatekeeper each warn once
+("More Info → Run anyway" / right-click → Open).
+
+## Build from source
 
 ```sh
-npm install --save-dev electron-builder
-npm run dist:linux    # AppImage  -> ../dist
-npm run dist:win      # NSIS .exe -> ../dist
-npm run dist:mac      # .dmg      -> ../dist
+npm ci
+npm run dist:linux    # -> dist/*.AppImage
+npm run dist:win      # -> dist/*.exe   (Windows, or CI)
+npm run dist:mac      # -> dist/*.dmg   (macOS, or CI)
 ```
 
-Icons live in `build/` (`icon.png` 512×512, `icon.ico`, `icon.icns`). Without icons
-electron-builder falls back to the default Electron icon.
+Windows and macOS artifacts are produced by CI on each tag — those targets cannot be
+cross-built reliably from Linux. `electron-builder` is already a devDependency.
 
-## Sharing with testers
-
-- **Built app (best):** send the AppImage / .exe / .dmg from `dist/`. Testers just run it.
-- **From source:** send the repo, they run `npm install && npm run app` (needs Node).
-- **Save file:** the app finds it automatically on all three platforms. If a tester keeps
-  the game somewhere unusual, `CH_SAVE_FILE=/path/to/playerSaveData.txt` overrides it.
-
-Save locations it checks:
-- Linux/Steam Play: `~/.local/share/Steam/steamapps/compatdata/363970/pfx/.../playerSaveData.txt`
-- Windows: `%LOCALAPPDATA%\Playsaurus\Clicker Heroes\playerSaveData.txt`
-- macOS: `~/Library/Application Support/Playsaurus/Clicker Heroes/playerSaveData.txt`
+Icons: `build/icon.png` (512×512). electron-builder derives the platform formats from it.
 
 ## Standalone
 
-It runs on its own — no terminal, no me:
+Runs on its own — no terminal and no Node once installed:
 
-- **Login:** `~/.config/autostart/ch-overlay.desktop`
-- **App menu:** "Clicker Heroes Companion" (`~/.local/share/applications/ch-overlay.desktop`)
-- **Terminal:** `clicker-heroes-overlay/repo/bin/ch-overlay`
+- **Autostart:** `~/.config/autostart/ch-overlay.desktop`
+- **App menu:** "Clicker Heroes Companion"
+- **Terminal:** `repo/bin/ch-overlay` — dev launch, always current code
+- **Update the working copy:** `repo/bin/ch-update` (git pull + restart)
 
-Keys: `Ctrl+Shift+M` minimise · `Ctrl+Shift+H` hide/show · `Ctrl+Shift+R` reload · `Ctrl+Shift+Q` quit.
-The `—` in the title bar collapses the panel to a title strip.
+Keys: `Ctrl+Shift+M` minimise · `Ctrl+Shift+H` hide/show · `Ctrl+Shift+R` reload ·
+`Ctrl+Shift+Q` quit. The `—` in the title bar collapses the panel to a title strip.
+
+Back to the live save after loading a pasted one: **Settings → Back to live save**.
 
 ## Where the numbers come from
 
