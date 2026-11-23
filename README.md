@@ -2,6 +2,9 @@
 
 > Credits: everything this app owes to the community is listed in **[CREDITS.md](CREDITS.md)**. Overlay
 
+<img src="docs/screenshots/main.png" alt="Clicker Heroes Companion window" width="420">
+
+
 Reads your Clicker Heroes save file, computes the same numbers the game does,
 and tells you what to do next. It never writes to the save and never touches
 the running game.
