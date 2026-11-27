@@ -32,6 +32,17 @@ if (!app.requestSingleInstanceLock()) {
 app.commandLine.appendSwitch("class", "clicker-heroes-companion");
 if (process.platform === "win32") app.setAppUserModelId("dev.geenutz.clickerheroeslive");
 
+// A second launch (or a restart while the previous instance is still shutting
+// down) must not die with "EADDRINUSE" in a dialog: the server is only a local
+// convenience, so a busy port is logged and the window still opens.
+process.on("uncaughtException", (err) => {
+  if (err && (err.code === "EADDRINUSE" || /EADDRINUSE/.test(String(err.message)))) {
+    console.log(`port ${PORT} already in use — attaching to the running instance`);
+    return;
+  }
+  console.error("uncaught:", err);
+});
+
 let win = null;
 
 function create() {
