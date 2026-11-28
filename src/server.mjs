@@ -95,6 +95,9 @@ async function snapshot() {
     saveAgeSeconds: ageSeconds,
     stale: ageSeconds > 120,
     version,
+    // The panel reads payload.changelog; it was computed nowhere, so the tab
+    // always said "changelog unavailable".
+    changelog: readChangelog(),
     state,
     advice,
     // The panel reads these two directly; they used to be parsed and then
