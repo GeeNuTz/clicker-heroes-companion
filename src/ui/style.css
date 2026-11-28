@@ -285,3 +285,50 @@ input[type="text"] {
 .dead { color: #ff8a8a; font-weight: 600; }
 
 .brandver { color: var(--dim); font-size: 10px; letter-spacing: 0.02em; }
+
+/* ---- Power Five ------------------------------------------------------- */
+.pf {
+  margin: 6px 0 10px;
+  border: 1px solid var(--line, rgba(255,255,255,.14));
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(122,162,255,.10), rgba(122,162,255,.03));
+  overflow: hidden;
+}
+.pf-head {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 8px 10px;
+  background: none; border: 0; cursor: pointer;
+  color: inherit; text-align: left; font: inherit;
+}
+.pf-head:hover { background: rgba(122,162,255,.08); }
+.pf-chev { width: 12px; opacity: .7; transition: transform .15s; }
+.pf.closed .pf-chev { transform: rotate(-90deg); }
+.pf-title { font-weight: 700; letter-spacing: .08em; font-size: .82em; color: #7aa2ff; }
+.pf-sub { margin-left: auto; opacity: .6; font-size: .78em; }
+.pf-body { padding: 0 10px 8px; }
+.pf.closed .pf-body { display: none; }
+.pf-row {
+  display: grid;
+  grid-template-columns: 22px 1fr auto auto auto;
+  gap: 8px; align-items: baseline;
+  padding: 4px 0; border-top: 1px dashed rgba(255,255,255,.08);
+}
+.pf-row:first-child { border-top: 0; }
+.pf-rank {
+  display: inline-grid; place-items: center;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: rgba(122,162,255,.22); color: #bcd0ff;
+  font-size: .72em; font-weight: 700;
+}
+.pf-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pf-lvl { color: #52e0a4; font-variant-numeric: tabular-nums; }
+.pf-share { color: #f2b134; font-variant-numeric: tabular-nums; }
+.pf-next { opacity: .6; font-size: .8em; font-variant-numeric: tabular-nums; }
+.pf-empty { opacity: .6; padding: 4px 0; }
+.pmark {
+  display: inline-block; min-width: 18px; text-align: center;
+  padding: 0 4px; border-radius: 4px;
+  background: rgba(122,162,255,.25); color: #cfdcff;
+  font-size: .72em; font-weight: 700;
+}
+tr.power td { background: rgba(122,162,255,.06); }

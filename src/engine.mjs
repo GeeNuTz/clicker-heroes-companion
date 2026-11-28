@@ -419,6 +419,26 @@ export function buildState(save, opts = {}) {
   }
   heroes.sort((a, b) => b.dpsNum - a.dpsNum);
 
+  // Power Five — the heroes actually carrying the run. Share is of current DPS,
+  // and a hero with no levels cannot be a carry even if it sorts high.
+  const totalHeroDps = heroes.reduce((sum, h) => sum + h.dpsNum, 0);
+  heroes.forEach((h, i) => {
+    h.share = totalHeroDps > 0 ? (h.dpsNum / totalHeroDps) * 100 : 0;
+    h.powerRank = h.dpsNum > 0 && i < 5 ? i + 1 : 0;
+  });
+  const powerFive = heroes
+    .filter((h) => h.powerRank > 0)
+    .map((h) => ({
+      rank: h.powerRank,
+      name: h.name,
+      level: h.level,
+      share: h.share,
+      dps: h.dps,
+      nextLevelCost: h.nextLevelCost,
+      next25Cost: h.next25Cost,
+      gilds: h.gilds,
+    }));
+
   // Gilds survive an ascension even though hero levels reset to 0, so they must
   // be counted from the whole collection, not from the levelled heroes above.
   const allHeroesRaw = Object.values(save.heroCollection?.heroes ?? {});
@@ -545,6 +565,7 @@ export function buildState(save, opts = {}) {
       })
       .filter((o) => o.level > 0 || o.maxLevel > 0),
     heroes,
+    powerFive,
     relicsDetail: (() => {
       const types = gameData().itemBonusTypes || {};
       const items = save.items?.items || {};

@@ -47,7 +47,17 @@
         <button data-tab="settings">⚙</button>
       </nav>
 
-      <section id="tab-plan" class="tabpane active"><div class="hint" id="asc-summary"></div><ol id="plan" class="timeline"></ol></section>
+      <section id="tab-plan" class="tabpane active">
+        <div class="pf" id="pf">
+          <button class="pf-head" id="pf-toggle" aria-expanded="true">
+            <span class="pf-chev" id="pf-chev">▾</span>
+            <span class="pf-title">POWER FIVE</span>
+            <span class="pf-sub" id="pf-sub">the heroes carrying the run</span>
+          </button>
+          <div class="pf-body" id="pf-body"><div class="pf-rows" id="pf-rows"></div></div>
+        </div>
+        <div class="hint" id="asc-summary"></div><ol id="plan" class="timeline"></ol>
+      </section>
 
       <section id="tab-ancients" class="tabpane">
         <div class="hint" id="ancients-hint">Next = hero souls for the next level (Chor'gorloth discount already applied).</div>
@@ -145,6 +155,9 @@
         <label class="setting">Transcension log (Transcensions → Export)
           <textarea id="set-trlog" rows="3" placeholder="Transcension #,Duration H:M:S,HZE,HS Gained,Ascensions"></textarea>
         </label>
+
+        <h4>Window behaviour</h4>
+        <label class="setting"><input id="set-launchwithgame" type="checkbox" /> Launch when Clicker Heroes starts (not at login)</label>
 
         <h4>Save source</h4>
         <label class="setting">Save file path (blank = auto-detect)

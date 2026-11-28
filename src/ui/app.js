@@ -2,6 +2,30 @@
 
 const $ = (id) => document.getElementById(id);
 
+function renderPowerFive(state) {
+  const rows = $("pf-rows");
+  if (!rows) return;
+  const five = state.powerFive || [];
+  const sub = $("pf-sub");
+  if (sub) {
+    sub.textContent = five.length
+      ? `top ${five.length} · ${five.reduce((s, h) => s + h.share, 0).toFixed(0)}% of your DPS`
+      : "no levelled heroes yet";
+  }
+  rows.innerHTML = five.length
+    ? five
+        .map(
+          (h) =>
+            `<div class="pf-row"><span class="pf-rank">${h.rank}</span>` +
+            `<span class="pf-name">${esc(h.name)}</span>` +
+            `<span class="pf-lvl">L${h.level}</span>` +
+            `<span class="pf-share">${h.share.toFixed(1)}%</span>` +
+            `<span class="pf-next">next ${short(h.nextLevelCost)}</span></div>`,
+        )
+        .join("")
+    : '<div class="pf-empty">nothing to promote yet</div>';
+}
+
 function short(n) {
   const x = Number(n);
   if (!Number.isFinite(x)) return "∞";
@@ -186,12 +210,16 @@ function render(payload) {
     .sort(comparators[sortBy] || comparators.game)
     .map(
       (h) =>
-        `<tr><td class="${h.gilds ? "gilded" : ""}">${esc(h.name)}${h.gilds ? ` <span class="gmark">+${h.gilds}</span>` : ""}</td>` +
+        `<tr class="${h.powerRank ? "power" : ""}"><td class="${h.gilds ? "gilded" : ""}">` +
+        `${h.powerRank ? `<span class="pmark" title="Power Five #${h.powerRank}">P${h.powerRank}</span> ` : ""}` +
+        `${esc(h.name)}${h.gilds ? ` <span class="gmark">+${h.gilds}</span>` : ""}</td>` +
         `<td class="r">${h.gilds ? `+${(h.gilds * (state.gilds?.perGildPercent ?? 50))}%` : "—"}</td>` +
         `<td class="r">${h.level}</td><td class="r">${short(h.nextLevelCost)}</td>` +
         `<td class="r">${short(h.dps)}</td></tr>`,
     )
     .join("");
+
+  renderPowerFive(state);
 
   const ma = payload.advice?.mercs;
   const mblock = $("merc-advice");
@@ -357,6 +385,7 @@ async function loadSettingsPanel() {
     if ($("set-theme")) $("set-theme").value = s.theme || "dark";
     if ($("set-savepath")) $("set-savepath").value = s.savePath || "";
     if ($("set-lasttrans")) $("set-lasttrans").value = s.lastTranscensionSouls || 0;
+    if ($("set-launchwithgame")) $("set-launchwithgame").checked = s.launchWithGame !== false;
     if ($("set-asclog")) $("set-asclog").value = s.ascensionLog || "";
     if ($("set-trlog")) $("set-trlog").value = s.transcensionLog || "";
     if ($("set-fontfamily")) $("set-fontfamily").value = s.fontFamily || "sans";
@@ -382,6 +411,7 @@ document.getElementById("btn-save-settings").addEventListener("click", async () 
     body.fontFamily = $("set-fontfamily").value;
     body.savePath = ($("set-savepath").value || "").trim();
     body.lastTranscensionSouls = Number($("set-lasttrans").value || 0);
+    body.launchWithGame = $("set-launchwithgame") ? $("set-launchwithgame").checked : true;
     body.ascensionLog = ($("set-asclog").value || "").trim();
     body.transcensionLog = ($("set-trlog").value || "").trim();
     body.density = $("set-density").value;
@@ -578,3 +608,18 @@ es.onmessage = (ev) => {
     // "ping" keeps the watchdog fed without redrawing
   } catch {}
 };
+
+
+// ---- Power Five panel: open/closed is remembered -------------------------
+(function wirePowerFive() {
+  const pf = document.getElementById("pf");
+  const toggle = document.getElementById("pf-toggle");
+  if (!pf || !toggle) return;
+  const apply = (open) => {
+    pf.classList.toggle("closed", !open);
+    toggle.setAttribute("aria-expanded", String(open));
+    localStorage.setItem("pf-open", open ? "1" : "0");
+  };
+  apply(localStorage.getItem("pf-open") !== "0");
+  toggle.addEventListener("click", () => apply(pf.classList.contains("closed")));
+})();

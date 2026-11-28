@@ -4,6 +4,7 @@ import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseAscensionCsv, parseTranscensionCsv, classifyClipboard } from "./logs.mjs";
 import { execFileSync } from "node:child_process";
 import { convertSave, decodeSave, encodeSave, findSave, readSave } from "./save.mjs";
 import { closeGame, gamePids, isGameRunning } from "./gameproc.mjs";
@@ -31,30 +32,6 @@ const clients = new Set();
 // active until the next reload clears it.
 let overrideSave = null;
 let overrideLabel = null;
-
-/** Parse the CSV exported by the game's Transcensions window. */
-function parseTranscensionCsv(csv) {
-  const rows = [];
-  for (const line of String(csv || "").split(/\r?\n/)) {
-    const m = line.match(/^\s*(\d+)\s*,\s*([0-9:]+)\s*,\s*(\d+)\s*,\s*([0-9.]+)([KM]?)\s*,\s*(\d+)\s*$/);
-    if (!m) continue;
-    const mult = m[5] === "K" ? 1e3 : m[5] === "M" ? 1e6 : 1;
-    rows.push({ n: Number(m[1]), duration: m[2], hze: Number(m[3]), hs: Number(m[4]) * mult, ascensions: Number(m[6]) });
-  }
-  return rows;
-}
-
-/** Parse the CSV exported by the game's Ascensions window. */
-function parseAscensionCsv(csv) {
-  const rows = [];
-  for (const line of String(csv || "").split(/\r?\n/)) {
-    const m = line.match(/^\s*(\d+)\s*,\s*([0-9:]+)\s*,\s*(\d+)\s*,\s*([0-9.]+)([KM]?)\s*$/);
-    if (!m) continue;
-    const mult = m[5] === "K" ? 1e3 : m[5] === "M" ? 1e6 : 1;
-    rows.push({ n: Number(m[1]), duration: m[2], hze: Number(m[3]), hs: Number(m[4]) * mult });
-  }
-  return rows;
-}
 
 /** Last N versions from CHANGELOG.md — the single source for the in-app list. */
 function readChangelog(n = 5) {
@@ -388,16 +365,16 @@ function watchGameExports() {
     }
     if (!clip || clip === last) return;
     last = clip;
-    const first = (clip.replace(/^\uFEFF/, "").split(/\r?\n/)[0] || "").trim();
+    const kind = classifyClipboard(clip);
     const file = process.env.CH_SETTINGS_FILE || new URL("../settings.json", import.meta.url);
     try {
       const current = loadSettings();
       let changed = false;
-      if (/^Ascensions?\s*#/i.test(first) && clip.trim() !== current.ascensionLog) {
+      if (kind === "ascensionLog" && clip.trim() !== current.ascensionLog) {
         current.ascensionLog = clip.trim();
         changed = true;
         console.log("clipboard: ascension log imported");
-      } else if (/^Transcensions?\s*#/i.test(first) && clip.trim() !== current.transcensionLog) {
+      } else if (kind === "transcensionLog" && clip.trim() !== current.transcensionLog) {
         current.transcensionLog = clip.trim();
         changed = true;
         console.log("clipboard: transcension log imported");
