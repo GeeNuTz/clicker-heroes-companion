@@ -845,6 +845,23 @@ export function buildState(save, opts = {}) {
     r.at45Score = Math.round(w45 * 100) / 100;
   }
   state.relicsDetail.stage = { label: zoneNow < 5000 ? "before zone 5000" : "after zone 5000", zone: zoneNow };
+
+  const equippedByUidFor = (r) => r.equipped === true;
+  // Forge Cores: salvage value is a rarity multiplier times the relic level
+  // (wiki: Forge Cores — Common 5x, Uncommon 7.5x, Rare 10x, Epic 12.5x,
+  // Fabled 15x, Mythical 17.5x, Legendary 22x, Transcendent 26x).
+  const CORE_MULT = [0, 5, 7.5, 10, 12.5, 15, 17.5, 22, 26];
+  const coreValue = (r) => Math.round((CORE_MULT[r.rarity] || 5) * r.level);
+  for (const r of state.relicsDetail.items) r.coreValue = coreValue(r);
+  const rankByScore = state.relicsDetail.items.slice().sort((a, b) => b.score - a.score);
+  const keep = new Set(rankByScore.slice(0, 8).map((r) => r.uid));
+  const salvage = rankByScore
+    .filter((r) => !keep.has(r.uid) && !equippedByUidFor(r, state))
+    .map((r) => ({ uid: r.uid, name: r.name, level: r.level, rarity: r.rarity, cores: r.coreValue }));
+  state.relicsDetail.cores = num(save.items?.salvagePoints ?? 0);
+  state.relicsDetail.keep = [...keep];
+  state.relicsDetail.salvage = salvage;
+  state.relicsDetail.salvageCores = salvage.reduce((n, x) => n + x.cores, 0);
   state.relicsDetail.weights = WEIGHT;
   // The stated order is a priority, not a tie-breaker: primal chance first,
   // then primal souls, cost, idle DPS, gilded. Within one tier the measured

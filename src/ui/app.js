@@ -183,10 +183,12 @@ function renderUnsafe(payload) {
   const relicRows = relicBox.items || [];
   const equippedSet = new Set(relicBox.equipped || []);
   const suggestedSet = new Set(relicBox.suggested || []);
+  const salvageSet = new Set((relicBox.salvage || []).map((x) => x.uid));
   const rnote = $("relic-note");
   if (rnote) {
     rnote.textContent = relicRows.length
-      ? `${equippedSet.size}/${relicBox.slots} worn · ${relicRows.length} in the pile · ranked by the wiki stage table` +
+      ? `${equippedSet.size}/${relicBox.slots} worn · ${relicRows.length} in the pile · ${relicBox.cores ?? 0} forge cores · ` +
+        `${(relicBox.salvage || []).length} junk relics are safe to salvage for ${relicBox.salvageCores ?? 0} cores · ` +
         (relicBox.stage ? ` (${relicBox.stage.label}` + (relicBox.priority ? `; order: ${relicBox.priority.join(" > ")}` : "") + ")" : "")
       : "no relics yet";
   }
@@ -222,7 +224,8 @@ function renderUnsafe(payload) {
   $("relics").innerHTML = ordered.length
     ? ordered.map((r) => {
         const tag = equippedSet.has(r.uid) ? '<span class="pf-target">worn</span> '
-          : suggestedSet.has(r.uid) ? '<span class="pf-target">suggested</span> ' : "";
+          : suggestedSet.has(r.uid) ? '<span class="pf-target">suggested</span> '
+          : salvageSet.has(r.uid) ? '<span class="pf-target">salvage</span> ' : "";
         return `<tr class="${equippedSet.has(r.uid) ? "power" : ""}">` +
           `<td>${tag}${esc(r.name)}<div class="sub2">${bonusLines(r)}</div></td>` +
           `<td class="r">${r.level}</td><td class="r rar r${r.rarity}">${RARITY[r.rarity] ?? r.rarity}</td>` +
