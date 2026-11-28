@@ -672,3 +672,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const head = document.getElementById("pf-toggle");
   if (head) head.setAttribute("aria-expanded", String(open));
 });
+
+// Keyboard fallback: Ctrl+Shift+P from the main process (see electron/main.mjs).
+if (window.chOverlay && typeof window.chOverlay.onTogglePowerFive === "function") {
+  window.chOverlay.onTogglePowerFive(() => {
+    const box = document.getElementById("pf");
+    const head = document.getElementById("pf-toggle");
+    if (!box) return;
+    const open = box.classList.contains("closed");
+    box.classList.toggle("closed", !open);
+    if (head) head.setAttribute("aria-expanded", String(open));
+    try { localStorage.setItem("pf-open", open ? "1" : "0"); } catch { /* ignore */ }
+  });
+}

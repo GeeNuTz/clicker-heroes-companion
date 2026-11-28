@@ -215,6 +215,9 @@ app.whenReady().then(() => {
     if (!win) return create();
     win.isVisible() ? win.hide() : win.show();
   });
+  // Keyboard fallback for the Power Five panel: an overlay window does not
+  // always receive clicks over a fullscreen game, so this must exist.
+  globalShortcut.register("Control+Shift+P", () => win?.webContents.send("toggle-powerfive"));
   globalShortcut.register("Control+Shift+R", () => win?.reload());
   globalShortcut.register("Control+Shift+Q", () => app.quit());
 });
