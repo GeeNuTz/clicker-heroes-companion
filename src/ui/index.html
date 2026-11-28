@@ -107,7 +107,14 @@
 
       <section id="tab-relics" class="tabpane">
         <div class="hint" id="relic-note"></div>
-        <table class="tbl"><thead><tr><th>Relic</th><th class="r">Level</th><th class="r">Rarity</th></tr></thead><tbody id="relics"></tbody></table>
+        <div class="pf" id="relic-plan-box">
+          <div class="pf-head" style="cursor:default">
+            <span class="pf-title">SUGGESTED LOADOUT</span>
+            <span class="pf-sub" id="relic-plan-sub">weighted by the ancients you have</span>
+          </div>
+          <div class="pf-body"><div class="pf-rows" id="relic-plan"></div></div>
+        </div>
+        <table class="tbl"><thead><tr><th>Relic</th><th class="r">Level</th><th class="r">Rarity</th><th class="r">Score</th></tr></thead><tbody id="relics"></tbody></table>
       </section>
 
       <section id="tab-settings" class="tabpane">

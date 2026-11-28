@@ -593,7 +593,16 @@ export function buildState(save, opts = {}) {
     relicsDetail: (() => {
       const types = gameData().itemBonusTypes || {};
       const items = save.items?.items || {};
-      return Object.values(items).map((it) => {
+      const slots = save.items?.slots || {};
+      const slotCount = num(save.items?.equipmentSlots ?? 4);
+      // Slots 1..slotCount are worn; the rest are the junk pile.
+      const equippedByUid = new Map();
+      for (const [slot, uid] of Object.entries(slots)) {
+        if (Number(slot) <= slotCount) equippedByUid.set(Number(uid), Number(slot));
+      }
+      const ancientLevel = (id) => num(save.ancients?.ancients?.[id]?.level ?? 0);
+
+      const rows = Object.values(items).map((it) => {
         const pairs = [
           [it.bonusType1, it.bonus1Level],
           [it.bonusType2, it.bonus2Level],
@@ -612,23 +621,68 @@ export function buildState(save, opts = {}) {
             const amount = (Number(lvl) || 0) * perLevel;
             return {
               stat: t.name,
+              typeId: Number(id),
               ancientId: t.ancientId,
               ancientName: ancient ? ancient.name : null,
               description: t.effectDescription,
               amount: Math.round(amount * 10) / 10,
+              ancientLevel: ancientLevel(t.ancientId),
               label:
                 (ancient ? `${ancient.name.split(",")[0]}: ` : "") +
                 t.effectDescription.replace("%1", String(Math.round(amount * 10) / 10)),
             };
           });
         return {
+          uid: num(it.uid),
           name: it.name,
           level: num(it.level),
           rarity: num(it.rarity),
           type: it.type,
+          equipped: equippedByUid.has(num(it.uid)),
+          slot: equippedByUid.get(num(it.uid)) ?? null,
           bonuses,
         };
       });
+
+      // A relic's worth is the sum of the ancients it strengthens, weighted by
+      // how much this save actually uses them (wiki: each bonus maps to one
+      // ancient, and its size is relative to the same bonus on other relics).
+      const maxByType = new Map();
+      for (const r of rows) for (const b of r.bonuses) {
+        maxByType.set(b.typeId, Math.max(maxByType.get(b.typeId) ?? 0, b.amount));
+      }
+      for (const r of rows) {
+        let score = 0;
+        for (const b of r.bonuses) {
+          const max = maxByType.get(b.typeId) || 1;
+          const strength = b.amount / max;
+          // An ancient that was never summoned does not use the bonus yet;
+          // weighted by its current level when it has been.
+          const use = b.ancientLevel > 0 ? 1 + Math.log10(1 + b.ancientLevel) / 3 : 0.15;
+          score += strength * use;
+        }
+        r.score = Math.round(score * 1000) / 1000;
+      }
+
+      const suggested = rows
+        .slice()
+        .sort((a, b) => b.score - a.score)
+        .slice(0, slotCount)
+        .map((r) => r.uid);
+
+      const byUid = new Map(rows.map((r) => [r.uid, r]));
+      return {
+        items: rows,
+        slots: slotCount,
+        equipped: [...equippedByUid.keys()],
+        suggested,
+        swaps: suggested
+          .filter((uid) => !equippedByUid.has(uid))
+          .map((uid) => ({
+            inName: byUid.get(uid)?.name,
+            outName: rows.find((r) => r.equipped && !suggested.includes(r.uid))?.name || null,
+          })),
+      };
     })(),
 
     gilds: {

@@ -16,11 +16,12 @@ function renderPowerFive(state) {
             `<div class="pf-row${h.belowTarget ? "" : " done"}">` +
             `<span class="pf-rank">${h.rank}</span>` +
             `<span class="pf-name">${esc(h.name)}</span>` +
-            `<span class="pf-lvl">L${h.level}<span class="pf-target">/${h.target}</span></span>` +
+            `<span class="pf-lvl">L${h.level} <span class="pf-target">· target ${h.target}</span></span>` +
             `<span class="pf-share">${h.gilds ? "+" + h.gilds + " gild" : "—"}</span>` +
             `<span class="pf-next">${h.share.toFixed(1)}% dps</span></div>`,
         )
         .join("") +
+      `<div class="pf-note">4x damage every 25 levels, so the target is an efficiency ceiling, not a cap.</div>` +
       ((state.topDps && state.topDps.length)
         ? `<div class="pf-note">Actually carrying the run: ${state.topDps
             .slice(0, 3)
@@ -167,25 +168,49 @@ function render(payload) {
       }).join("")
     : `<tr><td colspan="5" class="dim">no gilds</td></tr>`;
 
-  // relics: only the stats that match ancients you actually own
-  const relics = state.relicsDetail || [];
-  const owned = new Set((state.ancients || []).filter((a) => a.level > 0).map((a) => shortName(a.name)));
-  const relevant = relics.map((r) => ({
-    ...r,
-    kept: (r.bonuses || []).filter((b) => b.ancientName && owned.has(shortName(b.ancientName))),
-  }));
-  const usable = relevant.filter((r) => r.kept.length);
+  // relics: what is worn, what is suggested, and why
+  const relicBox = state.relicsDetail || { items: [], equipped: [], suggested: [], slots: 4 };
+  const relicRows = relicBox.items || [];
+  const equippedSet = new Set(relicBox.equipped || []);
+  const suggestedSet = new Set(relicBox.suggested || []);
   const rnote = $("relic-note");
   if (rnote) {
-    rnote.textContent = relics.length
-      ? `${relics.length} relic${relics.length === 1 ? "" : "s"} · ${usable.length} with bonuses your ancients use`
+    rnote.textContent = relicRows.length
+      ? `${equippedSet.size}/${relicBox.slots} worn · ${relicRows.length} in the pile · score = strength of the ancients it feeds, weighted by how much you use them`
       : "no relics yet";
   }
-  $("relics").innerHTML = usable.length
-    ? usable.map((r) =>
-        `<tr><td>${esc(r.name)}<div class="sub2">${r.kept.map((b) => `${esc(b.ancientName)}: ${esc(b.description)}`).join("<br>")}</div></td>` +
-        `<td class="r">${r.level}</td><td class="r rar r${r.rarity}">${RARITY[r.rarity] ?? r.rarity}</td></tr>`).join("")
-    : `<tr><td colspan="3" class="dim">${relics.length ? "none of your relics boost an ancient you own" : "no relics"}</td></tr>`;
+  const plan = $("relic-plan");
+  if (plan) {
+    plan.innerHTML = (relicBox.suggested || [])
+      .map((uid, i) => {
+        const r = relicRows.find((x) => x.uid === uid);
+        if (!r) return "";
+        const worn = equippedSet.has(uid);
+        return `<div class="pf-row"><span class="pf-rank">${i + 1}</span>` +
+          `<span class="pf-name">${esc(r.name)}</span>` +
+          `<span class="pf-lvl">L${r.level}</span>` +
+          `<span class="pf-share">${(r.score || 0).toFixed(2)}</span>` +
+          `<span class="pf-next">${worn ? "worn" : "equip"}</span></div>`;
+      })
+      .join("") || '<div class="pf-empty">no relics to suggest</div>';
+  }
+  const ordered = relicRows
+    .slice()
+    .sort((a, b) => (equippedSet.has(b.uid) - equippedSet.has(a.uid)) || (b.score || 0) - (a.score || 0));
+  const bonusLines = (r) => (r.bonuses || [])
+    .filter((b) => (b.ancientLevel || 0) > 0)
+    .map((b) => `${esc(b.ancientName)}: ${esc(b.description.replace("%1", String(b.amount)))}`)
+    .join("<br>") || '<span class="dim">none of your ancients</span>';
+  $("relics").innerHTML = ordered.length
+    ? ordered.map((r) => {
+        const tag = equippedSet.has(r.uid) ? '<span class="pf-target">worn</span> '
+          : suggestedSet.has(r.uid) ? '<span class="pf-target">suggested</span> ' : "";
+        return `<tr class="${equippedSet.has(r.uid) ? "power" : ""}">` +
+          `<td>${tag}${esc(r.name)}<div class="sub2">${bonusLines(r)}</div></td>` +
+          `<td class="r">${r.level}</td><td class="r rar r${r.rarity}">${RARITY[r.rarity] ?? r.rarity}</td>` +
+          `<td class="r">${(r.score || 0).toFixed(2)}</td></tr>`;
+      }).join("")
+    : '<tr><td colspan="4" class="dim">no relics</td></tr>';
 
   $("outsiders").innerHTML = outs
     .map((o, i) => {
