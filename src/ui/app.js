@@ -650,15 +650,25 @@ es.onmessage = (ev) => {
 
 
 // ---- Power Five panel: open/closed is remembered -------------------------
-(function wirePowerFive() {
-  const pf = document.getElementById("pf");
-  const toggle = document.getElementById("pf-toggle");
-  if (!pf || !toggle) return;
-  const apply = (open) => {
-    pf.classList.toggle("closed", !open);
-    toggle.setAttribute("aria-expanded", String(open));
-    localStorage.setItem("pf-open", open ? "1" : "0");
-  };
-  apply(localStorage.getItem("pf-open") !== "0");
-  toggle.addEventListener("click", () => apply(pf.classList.contains("closed")));
-})();
+// Delegated on document: the panel is re-rendered on every save tick, and a
+// listener bound to the header itself dies with the node on the second click.
+document.addEventListener("click", (event) => {
+  const head = event.target.closest && event.target.closest(".pf-head");
+  if (!head) return;
+  const box = head.closest(".pf");
+  if (!box || box.id !== "pf") return;
+  event.preventDefault();
+  const open = box.classList.contains("closed");
+  box.classList.toggle("closed", !open);
+  head.setAttribute("aria-expanded", String(open));
+  try { localStorage.setItem("pf-open", open ? "1" : "0"); } catch { /* ignore */ }
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const box = document.getElementById("pf");
+  if (!box) return;
+  let open = true;
+  try { open = localStorage.getItem("pf-open") !== "0"; } catch { /* ignore */ }
+  box.classList.toggle("closed", !open);
+  const head = document.getElementById("pf-toggle");
+  if (head) head.setAttribute("aria-expanded", String(open));
+});
