@@ -618,7 +618,8 @@ export function buildState(save, opts = {}) {
             // (linear10 -> 10 per level, linear1 -> 1 per level).
             const m = /linear(\d+)/.exec(t.levelAmountFormula || "");
             const perLevel = m ? Number(m[1]) : 1;
-            const amount = (Number(lvl) || 0) * perLevel;
+            const addedLevels = Number(lvl) || 0;
+            const amount = addedLevels * perLevel;
             return {
               stat: t.name,
               typeId: Number(id),
@@ -626,6 +627,7 @@ export function buildState(save, opts = {}) {
               ancientName: ancient ? ancient.name : null,
               description: t.effectDescription,
               amount: Math.round(amount * 10) / 10,
+              addedLevels,
               ancientLevel: ancientLevel(t.ancientId),
               label:
                 (ancient ? `${ancient.name.split(",")[0]}: ` : "") +
@@ -715,39 +717,47 @@ export function buildState(save, opts = {}) {
   };
 
   // --- relic scoring -----------------------------------------------------
-  // A relic's bonus adds to the effect of the ancient it belongs to, and the
-  // real question is the *relative* gain: +280% idle DPS is huge when you have
-  // 500% and small when you have 20,000%. Categories follow the effect text.
-  const family = (text) => {
-    if (/DPS/i.test(text)) return "dps";
-    if (/Gold|Chest|Treasure/i.test(text)) return "gold";
-    if (/Hero Soul|Primal|rubies|Souls/i.test(text)) return "souls";
+  // Relics grant LEVELS of the ancient a bonus belongs to (wiki: Relics, after
+  // patch 0.25b). So the exact effect is ancientBonus(level + relicLevels) versus
+  // ancientBonus(level), evaluated with the game's own formulas in this file —
+  // no invented percentages. Each family then converts that effect change into a
+  // relative gain of the stat that matters for it.
+  const familyOf = (name) => {
+    if (/^(Siyalatas|Morgulis|Argaiv|Bhaal|Fragsworth|Juggernaut|Nogardnit)$/.test(name)) return "dps";
+    if (/^(Libertas|Mammon|Mimzee|Dora|Fortuna|Pluto)$/.test(name)) return "gold";
+    if (/^(Atman|Solomon|Revolc)$/.test(name)) return "souls";
     return "util";
   };
-  // Baselines turn "amount" into a relative gain: +100% is a doubling for a
-  // percentage stat, and the boss timer starts at 30 seconds.
-  const baseline = (b, fam) =>
-    fam === "util" && /seconds to Boss/i.test(b.description) ? 30 : 100;
   const ancById = new Map(state.ancients.map((a) => [a.id, a]));
+  // ratio > 1 means the relic improves the stat; utility stats are inverted
+  // where smaller is better (cooldowns, cost, monsters per zone).
+  const gainRatio = (name, cur, nxt, base) => {
+    if (name === "Atman") return cur > 0 ? nxt / cur : (nxt > 0 ? 2 : 1);
+    if (name === "Chronos") return (base + nxt) / (base + cur);
+    if (name === "Vaagur") return (100 - Math.min(75, cur)) / (100 - Math.min(75, nxt));
+    if (name === "Dogcog") return (100 - Math.min(50, cur)) / (100 - Math.min(50, nxt));
+    if (name === "Kumawakamaru") return cur > 0 ? nxt / cur : (nxt > 0 ? 1.5 : 1);
+    return (1 + nxt / 100) / (1 + cur / 100);
+  };
   for (const r of state.relicsDetail.items) {
     r.dps = 0; r.gold = 0; r.souls = 0; r.util = 0;
     for (const b of r.bonuses) {
+      const def = gd.ancients[String(b.ancientId)];
       const anc = ancById.get(b.ancientId);
-      // An ancient that was never summoned does not apply the bonus at all.
-      const current = anc ? Math.max(0, anc.bonus) : 0;
-      const fam = family(b.description);
-      const rel = current > 0 ? (b.amount / (current + baseline(b, fam))) * 100 : 0;
-      b.currentEffect = current;
+      const level = anc ? anc.level : 0;
+      if (!def || level <= 0) { b.relativeGain = 0; continue; }
+      const cur = ancientBonus(def, D(level), ob).toNumber();
+      const nxt = ancientBonus(def, D(level + b.addedLevels), ob).toNumber();
+      const name = shortName(def.name);
+      const fam = familyOf(name);
+      const ratio = gainRatio(name, cur, nxt, 30);
+      const rel = Math.max(0, (ratio - 1) * 100);
+      b.currentEffect = cur;
+      b.nextEffect = nxt;
       b.relativeGain = Math.round(rel * 100) / 100;
-      // One relic cannot double a stat; clamp so a single small ancient (a few
-      // seconds of Chronos, say) does not swamp the ranking.
-      r[fam] += Math.min(100, Math.max(0, rel));
+      r[fam] += Math.min(100, rel);
     }
     for (const k of ["dps", "gold", "souls", "util"]) r[k] = Math.round(r[k] * 100) / 100;
-    // Idle objective: DPS and gold compound, souls come from primals, boss
-    // timer and cooldowns help but do not raise the damage number.
-    // Weighted for the question "which four raise my damage most": DPS first,
-    // gold next (it buys levels), souls and the boss/skill utilities after.
     r.score = Math.round((r.dps + 0.6 * r.gold + 0.3 * r.souls + 0.2 * r.util) * 100) / 100;
   }
   state.relicsDetail.suggested = state.relicsDetail.items
