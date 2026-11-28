@@ -96,6 +96,10 @@ async function snapshot() {
     stale: ageSeconds > 120,
     state,
     advice,
+    // The panel reads these two directly; they used to be parsed and then
+    // dropped, which is why a pasted log still showed "No ascension log yet".
+    ascensions,
+    transcensions,
     suggest: always,
   };
 }
