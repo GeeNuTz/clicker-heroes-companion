@@ -208,7 +208,9 @@ function render(payload) {
         return `<tr class="${equippedSet.has(r.uid) ? "power" : ""}">` +
           `<td>${tag}${esc(r.name)}<div class="sub2">${bonusLines(r)}</div></td>` +
           `<td class="r">${r.level}</td><td class="r rar r${r.rarity}">${RARITY[r.rarity] ?? r.rarity}</td>` +
-          `<td class="r">${(r.score || 0).toFixed(2)}</td></tr>`;
+          `<td class="r">${(r.dps || 0).toFixed(0)}%</td><td class="r">${(r.gold || 0).toFixed(0)}%</td>` +
+          `<td class="r">${(r.souls || 0).toFixed(0)}%</td><td class="r">${(r.util || 0).toFixed(0)}%</td>` +
+          `<td class="r">${(r.score || 0).toFixed(1)}</td></tr>`;
       }).join("")
     : '<tr><td colspan="4" class="dim">no relics</td></tr>';
 

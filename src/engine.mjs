@@ -519,7 +519,7 @@ export function buildState(save, opts = {}) {
 
   const secondsSince = (ts) => (ts ? Math.max(0, (now - num(ts)) / 1000) : null);
 
-  return {
+  const state = {
     meta: {
       version: save.version,
       patch: save.readPatchNumber,
@@ -713,6 +713,51 @@ export function buildState(save, opts = {}) {
       soulsFromAscensions: str(D(save.totalHeroSoulsFromAscensions ?? 0)),
     },
   };
+
+  // --- relic scoring -----------------------------------------------------
+  // A relic's bonus adds to the effect of the ancient it belongs to, and the
+  // real question is the *relative* gain: +280% idle DPS is huge when you have
+  // 500% and small when you have 20,000%. Categories follow the effect text.
+  const family = (text) => {
+    if (/DPS/i.test(text)) return "dps";
+    if (/Gold|Chest|Treasure/i.test(text)) return "gold";
+    if (/Hero Soul|Primal|rubies|Souls/i.test(text)) return "souls";
+    return "util";
+  };
+  // Baselines turn "amount" into a relative gain: +100% is a doubling for a
+  // percentage stat, and the boss timer starts at 30 seconds.
+  const baseline = (b, fam) =>
+    fam === "util" && /seconds to Boss/i.test(b.description) ? 30 : 100;
+  const ancById = new Map(state.ancients.map((a) => [a.id, a]));
+  for (const r of state.relicsDetail.items) {
+    r.dps = 0; r.gold = 0; r.souls = 0; r.util = 0;
+    for (const b of r.bonuses) {
+      const anc = ancById.get(b.ancientId);
+      // An ancient that was never summoned does not apply the bonus at all.
+      const current = anc ? Math.max(0, anc.bonus) : 0;
+      const fam = family(b.description);
+      const rel = current > 0 ? (b.amount / (current + baseline(b, fam))) * 100 : 0;
+      b.currentEffect = current;
+      b.relativeGain = Math.round(rel * 100) / 100;
+      // One relic cannot double a stat; clamp so a single small ancient (a few
+      // seconds of Chronos, say) does not swamp the ranking.
+      r[fam] += Math.min(100, Math.max(0, rel));
+    }
+    for (const k of ["dps", "gold", "souls", "util"]) r[k] = Math.round(r[k] * 100) / 100;
+    // Idle objective: DPS and gold compound, souls come from primals, boss
+    // timer and cooldowns help but do not raise the damage number.
+    // Weighted for the question "which four raise my damage most": DPS first,
+    // gold next (it buys levels), souls and the boss/skill utilities after.
+    r.score = Math.round((r.dps + 0.6 * r.gold + 0.3 * r.souls + 0.2 * r.util) * 100) / 100;
+  }
+  state.relicsDetail.suggested = state.relicsDetail.items
+    .slice()
+    .sort((a, b) => b.score - a.score)
+    .slice(0, state.relicsDetail.slots)
+    .map((r) => r.uid);
+
+
+  return state;
 }
 
 // ----------------------------------------------------------------- helpers
@@ -813,6 +858,8 @@ function runClock(save, now) {
     zonesPerHour: seconds && seconds > 60 && zones > 0 ? (zones / seconds) * 3600 : null,
   };
 }
+
+
 
 function lastAscensionInfo(save) {
   const groups = save.stats?.transcensions ?? {};
