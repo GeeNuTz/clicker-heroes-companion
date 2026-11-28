@@ -796,23 +796,26 @@ export function buildState(save, opts = {}) {
   //    cost, double rubies, skill durations, primal souls, 10x gold
   //  - the player's own order: primal chance > primal souls > cost > idle DPS >
   //    gilded damage
+  // Priority is a multiplier on the measured gain, never a veto over it: a 7%
+  // relic does not outrank a 45% one just because its stat sits higher on the
+  // list. Primal chance still leads, by the widest factor.
   const WEIGHT = {
-    Atman: 1.0,          // primal boss chance — top tier on every source
-    Solomon: 0.9,        // primal hero souls
-    Dogcog: 0.85,        // hero cost
-    Siyalatas: 0.8,      // idle DPS (this save is idle)
-    Kumawakamaru: 0.75,  // fewer monsters per zone
-    Libertas: 0.7,       // idle gold
-    Revolc: 0.6,         // double rubies
-    Sniperino: 0.55, Kleptos: 0.55, // skill duration
-    Mammon: 0.5, Mimzee: 0.5, Dora: 0.5, Fortuna: 0.5,
-    Argaiv: 0.45,        // gilded damage — below idle DPS, as stated
-    Morgulis: 0.4, Bhaal: 0.35, Fragsworth: 0.35, Juggernaut: 0.35,
-    Chronos: 0.35, Vaagur: 0.3, Bubos: 0.3, Pluto: 0.3, Nogardnit: 0.3,
-    Berserker: 0.25, Chawedo: 0.25, Energize: 0.25, Hecatoncheir: 0.25,
-    Sniperino2: 0.0, Thusia: 0.2, Iris: 0.2,
+    Atman: 2.0,          // primal boss chance — top tier on every source
+    Solomon: 1.6,        // primal hero souls
+    Dogcog: 1.4,         // hero cost
+    Siyalatas: 1.2,      // idle DPS (this save is idle)
+    Kumawakamaru: 1.15,  // fewer monsters per zone
+    Libertas: 1.0,       // idle gold
+    Revolc: 0.9,         // double rubies
+    Sniperino: 0.8, Kleptos: 0.8, // skill duration
+    Mammon: 0.75, Mimzee: 0.75, Dora: 0.75, Fortuna: 0.75,
+    Argaiv: 0.7,         // gilded damage — below idle DPS, as stated
+    Morgulis: 0.65, Bhaal: 0.6, Fragsworth: 0.6, Juggernaut: 0.6,
+    Chronos: 0.6, Vaagur: 0.5, Bubos: 0.5, Pluto: 0.5, Nogardnit: 0.5,
+    Berserker: 0.45, Chawedo: 0.45, Energize: 0.45, Hecatoncheir: 0.45,
+    Thusia: 0.4, Iris: 0.4,
   };
-  const weightOf = (name) => (name in WEIGHT ? WEIGHT[name] : 0.25);
+  const weightOf = (name) => (name in WEIGHT ? WEIGHT[name] : 0.4);
 
   for (const r of state.relicsDetail.items) {
     let weighted = 0;
@@ -856,10 +859,10 @@ export function buildState(save, opts = {}) {
     }
     return best;
   };
+  // Tie-break inside equal scores by the stated order, nothing more.
   const byPriority = (a, b, scoreKey) => {
-    const ra = rankOf(a), rb = rankOf(b);
-    if (ra !== rb) return ra - rb;
-    return b[scoreKey] - a[scoreKey];
+    if (b[scoreKey] !== a[scoreKey]) return b[scoreKey] - a[scoreKey];
+    return rankOf(a) - rankOf(b);
   };
   for (const r of state.relicsDetail.items) r.priorityTier = rankOf(r);
   state.relicsDetail.priority = PRIORITY;
