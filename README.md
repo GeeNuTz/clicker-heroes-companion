@@ -9,6 +9,19 @@ Reads your Clicker Heroes save file, computes the same numbers the game does,
 and tells you what to do next. It never writes to the save and never touches
 the running game.
 
+## Power Five
+
+The Plan tab opens with a collapsible **POWER FIVE** panel: the five heroes whose damage share
+actually carries the run, with their level, share of your DPS and the cost of their next level.
+Click the header to fold it away and see the plan; the open/closed state is remembered.
+The same heroes are marked `P1`-`P5` in the Heroes tab, with tinted rows.
+
+## When it starts
+
+The companion no longer autostarts at login. A watcher (`tools/watch-game.mjs`, systemd user unit
+`clicker-companion-watch.service`) starts it when Clicker Heroes launches. The checkbox **Launch
+when Clicker Heroes starts** in Settings turns that off without touching the unit.
+
 ## Run
 
 Three ways, same thing:
