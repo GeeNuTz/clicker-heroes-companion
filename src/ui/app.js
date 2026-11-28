@@ -51,6 +51,16 @@ function secs(s) {
 }
 
 function render(payload) {
+  try {
+    renderUnsafe(payload);
+  } catch (err) {
+    console.error("render failed:", err);
+    const box = document.getElementById("warnings");
+    if (box) box.insertAdjacentHTML("afterbegin", `<div class="warn">render error: ${String(err && err.message || err)}</div>`);
+  }
+}
+
+function renderUnsafe(payload) {
   const { state, advice } = payload;
   const c = state.combat;
 
@@ -177,7 +187,7 @@ function render(payload) {
   if (rnote) {
     rnote.textContent = relicRows.length
       ? `${equippedSet.size}/${relicBox.slots} worn · ${relicRows.length} in the pile · ranked by the wiki stage table` +
-        (relicBox.stage ? ` (${relicBox.stage.label}: ${relicBox.stage.priority.join(" levels, then ")} levels)` : "")
+        (relicBox.stage ? ` (${relicBox.stage.label}` + (relicBox.priority ? `; order: ${relicBox.priority.join(" > ")}` : "") + ")" : "")
       : "no relics yet";
   }
   const plan = $("relic-plan");
