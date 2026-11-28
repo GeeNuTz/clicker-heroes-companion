@@ -760,11 +760,75 @@ export function buildState(save, opts = {}) {
     for (const k of ["dps", "gold", "souls", "util"]) r[k] = Math.round(r[k] * 100) / 100;
     r.score = Math.round((r.dps + 0.6 * r.gold + 0.3 * r.souls + 0.2 * r.util) * 100) / 100;
   }
-  state.relicsDetail.suggested = state.relicsDetail.items
+  // --- comparable at one level + the wiki's stage rule ------------------
+  // Relic level scales the levels it grants, so a L48 relic beats a L20 one for
+  // reasons that are not about its stats. Normalise every relic to level 45 to
+  // compare them fairly, and rank by the wiki's stage table (Relics → Forge
+  // Cores): before zone 5000 it is Atman levels, then Kumawakamaru levels.
+  const NORM_LEVEL = 45;
+  const byNameShort = new Map(state.ancients.map((a) => [shortName(a.name), a]));
+  for (const r of state.relicsDetail.items) {
+    const scale = r.level > 0 ? NORM_LEVEL / r.level : 1;
+    const norm = { dps: 0, gold: 0, souls: 0, util: 0 };
+    for (const b of r.bonuses) {
+      const def = gd.ancients[String(b.ancientId)];
+      const anc = byNameShort.get(shortName(def?.name || ""));
+      const level = anc ? anc.level : 0;
+      if (!def || level <= 0) continue;
+      const added = Math.max(1, Math.round(b.addedLevels * scale));
+      const cur = ancientBonus(def, D(level), ob).toNumber();
+      const nxt = ancientBonus(def, D(level + added), ob).toNumber();
+      const name = shortName(def.name);
+      const rel = Math.max(0, (gainRatio(name, cur, nxt, 30) - 1) * 100);
+      norm[familyOf(name)] += Math.min(100, rel);
+      b.at45Levels = added;
+      b.at45Gain = Math.round(rel * 100) / 100;
+    }
+    for (const k of ["dps", "gold", "souls", "util"]) norm[k] = Math.round(norm[k] * 100) / 100;
+    r.at45 = norm;
+    r.at45Score = Math.round((norm.dps + 0.6 * norm.gold + 0.3 * norm.souls + 0.2 * norm.util) * 100) / 100;
+  }
+
+  const zoneNow = state.zone.hze || state.zone.current || 0;
+  // Stage list from the wiki table; each row is the ordered set of ancients to
+  // chase. Later rows are only used when the earlier ones are exhausted, which
+  // the panel does not attempt to detect — it reports the row that applies.
+  const stages = [
+    { until: 5000, label: "before zone 5000", priority: ["Atman", "Kumawakamaru"] },
+    { until: Infinity, label: "after zone 5000", priority: ["Kumawakamaru", "Atman", "Sniperino"] },
+  ];
+  const stage = stages.find((s) => zoneNow < s.until) || stages[stages.length - 1];
+  const priorityIndex = (name) => {
+    const i = stage.priority.indexOf(name);
+    return i === -1 ? stage.priority.length : i;
+  };
+  const levelBonus = (r, names) =>
+    r.bonuses.reduce((sum, b) => {
+      const def = gd.ancients[String(b.ancientId)];
+      const nm = def ? shortName(def.name) : "";
+      return names.includes(nm) ? sum + b.addedLevels : sum;
+    }, 0);
+
+  const ranked = state.relicsDetail.items
     .slice()
-    .sort((a, b) => b.score - a.score)
+    .sort((a, b) => {
+      const pa = levelBonus(b, stage.priority) - levelBonus(a, stage.priority);
+      if (pa !== 0) return pa;
+      // tie-break by the best priority position, then by normalised gain
+      const ba = Math.min(...a.bonuses.map((x) => priorityIndex(gd.ancients[String(x.ancientId)] ? shortName(gd.ancients[String(x.ancientId)].name) : "")));
+      const bb = Math.min(...b.bonuses.map((x) => priorityIndex(gd.ancients[String(x.ancientId)] ? shortName(gd.ancients[String(x.ancientId)].name) : "")));
+      if (ba !== bb) return ba - bb;
+      return b.at45Score - a.at45Score;
+    });
+  state.relicsDetail.stage = { label: stage.label, zone: zoneNow, priority: stage.priority };
+  state.relicsDetail.suggested = ranked.slice(0, state.relicsDetail.slots).map((r) => r.uid);
+  state.relicsDetail.normalized = state.relicsDetail.items
+    .slice()
+    .sort((a, b) => b.at45Score - a.at45Score)
     .slice(0, state.relicsDetail.slots)
     .map((r) => r.uid);
+  state.relicsDetail.normLevel = NORM_LEVEL;
+
 
 
   return state;

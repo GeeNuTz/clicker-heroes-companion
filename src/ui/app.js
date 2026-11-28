@@ -176,7 +176,8 @@ function render(payload) {
   const rnote = $("relic-note");
   if (rnote) {
     rnote.textContent = relicRows.length
-      ? `${equippedSet.size}/${relicBox.slots} worn · ${relicRows.length} in the pile · score = strength of the ancients it feeds, weighted by how much you use them`
+      ? `${equippedSet.size}/${relicBox.slots} worn · ${relicRows.length} in the pile · ranked by the wiki stage table` +
+        (relicBox.stage ? ` (${relicBox.stage.label}: ${relicBox.stage.priority.join(" levels, then ")} levels)` : "")
       : "no relics yet";
   }
   const plan = $("relic-plan");
@@ -189,7 +190,7 @@ function render(payload) {
         return `<div class="pf-row"><span class="pf-rank">${i + 1}</span>` +
           `<span class="pf-name">${esc(r.name)}</span>` +
           `<span class="pf-lvl">L${r.level}</span>` +
-          `<span class="pf-share">${(r.score || 0).toFixed(2)}</span>` +
+          `<span class="pf-share">${(r.at45Score || 0).toFixed(1)}</span>` +
           `<span class="pf-next">${worn ? "worn" : "equip"}</span></div>`;
       })
       .join("") || '<div class="pf-empty">no relics to suggest</div>';
@@ -210,7 +211,7 @@ function render(payload) {
           `<td class="r">${r.level}</td><td class="r rar r${r.rarity}">${RARITY[r.rarity] ?? r.rarity}</td>` +
           `<td class="r">${(r.dps || 0).toFixed(0)}%</td><td class="r">${(r.gold || 0).toFixed(0)}%</td>` +
           `<td class="r">${(r.souls || 0).toFixed(0)}%</td><td class="r">${(r.util || 0).toFixed(0)}%</td>` +
-          `<td class="r">${(r.score || 0).toFixed(1)}</td></tr>`;
+          `<td class="r">${(r.score || 0).toFixed(1)}</td><td class="r">${(r.at45Score || 0).toFixed(1)}</td></tr>`;
       }).join("")
     : '<tr><td colspan="4" class="dim">no relics</td></tr>';
 
