@@ -790,41 +790,92 @@ export function buildState(save, opts = {}) {
   }
 
   const zoneNow = state.zone.hze || state.zone.current || 0;
-  // Stage list from the wiki table; each row is the ordered set of ancients to
-  // chase. Later rows are only used when the earlier ones are exhausted, which
-  // the panel does not attempt to detect — it reports the row that applies.
-  const stages = [
-    { until: 5000, label: "before zone 5000", priority: ["Atman", "Kumawakamaru"] },
-    { until: Infinity, label: "after zone 5000", priority: ["Kumawakamaru", "Atman", "Sniperino"] },
-  ];
-  const stage = stages.find((s) => zoneNow < s.until) || stages[stages.length - 1];
-  const priorityIndex = (name) => {
-    const i = stage.priority.indexOf(name);
-    return i === -1 ? stage.priority.length : i;
+  // Priority from the community sources, not invented:
+  //  - wiki Relics > Forge Cores table: before zone 5000 it is Atman then Kuma
+  //  - StackExchange 228356: top tier is +% Chance of Primal Bosses; middle is
+  //    cost, double rubies, skill durations, primal souls, 10x gold
+  //  - the player's own order: primal chance > primal souls > cost > idle DPS >
+  //    gilded damage
+  const WEIGHT = {
+    Atman: 1.0,          // primal boss chance — top tier on every source
+    Solomon: 0.9,        // primal hero souls
+    Dogcog: 0.85,        // hero cost
+    Siyalatas: 0.8,      // idle DPS (this save is idle)
+    Kumawakamaru: 0.75,  // fewer monsters per zone
+    Libertas: 0.7,       // idle gold
+    Revolc: 0.6,         // double rubies
+    Sniperino: 0.55, Kleptos: 0.55, // skill duration
+    Mammon: 0.5, Mimzee: 0.5, Dora: 0.5, Fortuna: 0.5,
+    Argaiv: 0.45,        // gilded damage — below idle DPS, as stated
+    Morgulis: 0.4, Bhaal: 0.35, Fragsworth: 0.35, Juggernaut: 0.35,
+    Chronos: 0.35, Vaagur: 0.3, Bubos: 0.3, Pluto: 0.3, Nogardnit: 0.3,
+    Berserker: 0.25, Chawedo: 0.25, Energize: 0.25, Hecatoncheir: 0.25,
+    Sniperino2: 0.0, Thusia: 0.2, Iris: 0.2,
   };
-  const levelBonus = (r, names) =>
-    r.bonuses.reduce((sum, b) => {
+  const weightOf = (name) => (name in WEIGHT ? WEIGHT[name] : 0.25);
+
+  for (const r of state.relicsDetail.items) {
+    let weighted = 0;
+    for (const b of r.bonuses) {
       const def = gd.ancients[String(b.ancientId)];
       const nm = def ? shortName(def.name) : "";
-      return names.includes(nm) ? sum + b.addedLevels : sum;
-    }, 0);
+      const contrib = Math.min(100, Math.max(0, b.relativeGain || 0)) * weightOf(nm);
+      b.weight = weightOf(nm);
+      b.contribution = Math.round(contrib * 100) / 100;
+      weighted += contrib;
+    }
+    r.score = Math.round(weighted * 100) / 100;
+    r.topAncient = r.bonuses
+      .slice()
+      .sort((a, b) => (b.contribution || 0) - (a.contribution || 0))[0]?.ancientName?.split(",")[0] || "";
+  }
 
-  const ranked = state.relicsDetail.items
+  // The level-45 comparison must use the same weights, otherwise it ranks on a
+  // different question than the score next to it.
+  for (const r of state.relicsDetail.items) {
+    let w45 = 0;
+    for (const b of r.bonuses) {
+      const def = gd.ancients[String(b.ancientId)];
+      const nm = def ? shortName(def.name) : "";
+      w45 += Math.min(100, Math.max(0, b.at45Gain || 0)) * weightOf(nm);
+    }
+    r.at45Score = Math.round(w45 * 100) / 100;
+  }
+  state.relicsDetail.stage = { label: zoneNow < 5000 ? "before zone 5000" : "after zone 5000", zone: zoneNow };
+  state.relicsDetail.weights = WEIGHT;
+  // The stated order is a priority, not a tie-breaker: primal chance first,
+  // then primal souls, cost, idle DPS, gilded. Within one tier the measured
+  // gain decides, so a worthless Atman relic does not beat a strong one.
+  const PRIORITY = ["Atman", "Solomon", "Dogcog", "Siyalatas", "Kumawakamaru", "Libertas", "Revolc"];
+  const rankOf = (r) => {
+    let best = PRIORITY.length + 1;
+    for (const b of r.bonuses) {
+      const def = gd.ancients[String(b.ancientId)];
+      const i = def ? PRIORITY.indexOf(shortName(def.name)) : -1;
+      if (i !== -1 && i < best) best = i;
+    }
+    return best;
+  };
+  const byPriority = (a, b, scoreKey) => {
+    const ra = rankOf(a), rb = rankOf(b);
+    if (ra !== rb) return ra - rb;
+    return b[scoreKey] - a[scoreKey];
+  };
+  for (const r of state.relicsDetail.items) r.priorityTier = rankOf(r);
+  state.relicsDetail.priority = PRIORITY;
+  state.relicsDetail.suggested = state.relicsDetail.items
     .slice()
-    .sort((a, b) => {
-      const pa = levelBonus(b, stage.priority) - levelBonus(a, stage.priority);
-      if (pa !== 0) return pa;
-      // tie-break by the best priority position, then by normalised gain
-      const ba = Math.min(...a.bonuses.map((x) => priorityIndex(gd.ancients[String(x.ancientId)] ? shortName(gd.ancients[String(x.ancientId)].name) : "")));
-      const bb = Math.min(...b.bonuses.map((x) => priorityIndex(gd.ancients[String(x.ancientId)] ? shortName(gd.ancients[String(x.ancientId)].name) : "")));
-      if (ba !== bb) return ba - bb;
-      return b.at45Score - a.at45Score;
-    });
-  state.relicsDetail.stage = { label: stage.label, zone: zoneNow, priority: stage.priority };
-  state.relicsDetail.suggested = ranked.slice(0, state.relicsDetail.slots).map((r) => r.uid);
+    .sort((a, b) => byPriority(a, b, "score"))
+    .slice(0, state.relicsDetail.slots)
+    .map((r) => r.uid);
+  state.relicsDetail.bestByScore = state.relicsDetail.items
+    .slice()
+    .sort((a, b) => b.score - a.score)
+    .slice(0, state.relicsDetail.slots)
+    .map((r) => r.uid);
   state.relicsDetail.normalized = state.relicsDetail.items
     .slice()
-    .sort((a, b) => b.at45Score - a.at45Score)
+    .sort((a, b) => byPriority(a, b, "at45Score"))
     .slice(0, state.relicsDetail.slots)
     .map((r) => r.uid);
   state.relicsDetail.normLevel = NORM_LEVEL;

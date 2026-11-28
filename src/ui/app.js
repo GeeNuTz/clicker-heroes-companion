@@ -193,7 +193,14 @@ function render(payload) {
           `<span class="pf-share">${(r.at45Score || 0).toFixed(1)}</span>` +
           `<span class="pf-next">${worn ? "worn" : "equip"}</span></div>`;
       })
-      .join("") || '<div class="pf-empty">no relics to suggest</div>';
+      .join("") + (() => {
+        const byScore = (relicBox.bestByScore || [])
+          .map((uid) => relicRows.find((x) => x.uid === uid))
+          .filter(Boolean)
+          .map((r) => `${esc(r.name)} (${(r.score || 0).toFixed(0)})`)
+          .join(" · ");
+        return byScore ? `<div class="pf-note">Highest measured gain instead: ${byScore}</div>` : "";
+      })() || '<div class="pf-empty">no relics to suggest</div>';
   }
   const ordered = relicRows
     .slice()
