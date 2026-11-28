@@ -94,6 +94,7 @@ async function snapshot() {
     mtimeMs,
     saveAgeSeconds: ageSeconds,
     stale: ageSeconds > 120,
+    version,
     state,
     advice,
     // The panel reads these two directly; they used to be parsed and then

@@ -278,7 +278,7 @@ function render(payload) {
     )
     .join("");
 
-  const ver = payload.suggest?.version || payload.version || "?";
+  const ver = payload.version || payload.suggest?.version || payload.state?.meta?.version || "?";
   if ($("appver")) $("appver").textContent = "v" + ver;
   if ($("brandver")) $("brandver").textContent = "v" + ver;
 
