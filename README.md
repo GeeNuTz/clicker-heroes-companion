@@ -11,10 +11,18 @@ the running game.
 
 ## Power Five
 
-The Plan tab opens with a collapsible **POWER FIVE** panel: the five heroes whose damage share
-actually carries the run, with their level, share of your DPS and the cost of their next level.
-Click the header to fold it away and see the plan; the open/closed state is remembered.
-The same heroes are marked `P1`-`P5` in the Heroes tab, with tinted rows.
+The Power Five are the five heroes that stay efficient to level through the early and mid game —
+Treebeast, Ivan the Drunken Brawler, Brittany, The Masked Samurai and The Great Forest Seer. They are
+not the five highest-DPS heroes right now; they are the ones you return to after unlocking a new
+hero, because their upgrade curve keeps paying off. Gilds are usually parked on them, Samurai first.
+
+The Plan tab opens with the panel listing exactly those five: level against the level the wiki's
+table says is still worth taking them to (2075 / 2075 / 2075 / 2425 / 2775), gild count, and their
+current share of your DPS. Under it, one line names whoever is actually carrying the run at this
+moment, which is a different question. Click the header to fold the panel away; the state is
+remembered. The same five carry `P1`-`P5` marks in the Heroes tab.
+
+Sources: [Power Five on the Clicker Heroes wiki](https://clickerheroes.fandom.com/wiki/Power_Five).
 
 ## When it starts
 

@@ -1,6 +1,6 @@
 {
   "name": "clicker-heroes-companion",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "private": true,
   "type": "module",
   "description": "Companion for Clicker Heroes 1: reads your save, shows live stats and the next actions.",

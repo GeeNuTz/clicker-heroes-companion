@@ -332,3 +332,6 @@ input[type="text"] {
   font-size: .72em; font-weight: 700;
 }
 tr.power td { background: rgba(122,162,255,.06); }
+.pf-target { opacity: .45; }
+.pf-row.done .pf-lvl { color: #52e0a4; }
+.pf-note { margin-top: 6px; font-size: .78em; opacity: .6; }

@@ -7,23 +7,27 @@ function renderPowerFive(state) {
   if (!rows) return;
   const five = state.powerFive || [];
   const sub = $("pf-sub");
-  if (sub) {
-    sub.textContent = five.length
-      ? `top ${five.length} · ${five.reduce((s, h) => s + h.share, 0).toFixed(0)}% of your DPS`
-      : "no levelled heroes yet";
-  }
+  if (sub) sub.textContent = "return to these after a new hero";
+
   rows.innerHTML = five.length
     ? five
         .map(
           (h) =>
-            `<div class="pf-row"><span class="pf-rank">${h.rank}</span>` +
+            `<div class="pf-row${h.belowTarget ? "" : " done"}">` +
+            `<span class="pf-rank">${h.rank}</span>` +
             `<span class="pf-name">${esc(h.name)}</span>` +
-            `<span class="pf-lvl">L${h.level}</span>` +
-            `<span class="pf-share">${h.share.toFixed(1)}%</span>` +
-            `<span class="pf-next">next ${short(h.nextLevelCost)}</span></div>`,
+            `<span class="pf-lvl">L${h.level}<span class="pf-target">/${h.target}</span></span>` +
+            `<span class="pf-share">${h.gilds ? "+" + h.gilds + " gild" : "—"}</span>` +
+            `<span class="pf-next">${h.share.toFixed(1)}% dps</span></div>`,
         )
-        .join("")
-    : '<div class="pf-empty">nothing to promote yet</div>';
+        .join("") +
+      ((state.topDps && state.topDps.length)
+        ? `<div class="pf-note">Actually carrying the run: ${state.topDps
+            .slice(0, 3)
+            .map((t) => `${esc(t.name)} ${t.share.toFixed(0)}%`)
+            .join(" · ")}</div>`
+        : "")
+    : '<div class="pf-empty">no heroes yet</div>';
 }
 
 function short(n) {

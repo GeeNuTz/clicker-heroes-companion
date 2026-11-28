@@ -419,25 +419,48 @@ export function buildState(save, opts = {}) {
   }
   heroes.sort((a, b) => b.dpsNum - a.dpsNum);
 
-  // Power Five — the heroes actually carrying the run. Share is of current DPS,
-  // and a hero with no levels cannot be a carry even if it sorts high.
+  // Power Five — a fixed set, not a ranking. Treebeast, Ivan, Brittany, The
+  // Masked Samurai and The Great Forest Seer are the five heroes that stay
+  // efficient to level in the early and mid game, which is why players return
+  // to them after unlocking a new hero. The wiki's table gives the level each
+  // one is still worth taking to (2075 / 2075 / 2075 / 2425 / 2775).
+  const POWER_FIVE = [
+    { id: 2, target: 2075 },
+    { id: 3, target: 2075 },
+    { id: 4, target: 2075 },
+    { id: 7, target: 2425 },
+    { id: 9, target: 2775 },
+  ];
   const totalHeroDps = heroes.reduce((sum, h) => sum + h.dpsNum, 0);
-  heroes.forEach((h, i) => {
+  heroes.forEach((h) => {
     h.share = totalHeroDps > 0 ? (h.dpsNum / totalHeroDps) * 100 : 0;
-    h.powerRank = h.dpsNum > 0 && i < 5 ? i + 1 : 0;
+    const idx = POWER_FIVE.findIndex((p) => p.id === h.id);
+    h.powerRank = idx === -1 ? 0 : idx + 1;
   });
-  const powerFive = heroes
-    .filter((h) => h.powerRank > 0)
-    .map((h) => ({
-      rank: h.powerRank,
+
+  const powerFive = POWER_FIVE.map((p, i) => {
+    const h = heroes.find((x) => x.id === p.id);
+    if (!h) return null;
+    return {
+      rank: i + 1,
       name: h.name,
       level: h.level,
+      target: p.target,
+      belowTarget: h.level < p.target,
       share: h.share,
       dps: h.dps,
       nextLevelCost: h.nextLevelCost,
       next25Cost: h.next25Cost,
       gilds: h.gilds,
-    }));
+    };
+  }).filter(Boolean);
+
+  // Who is actually doing the damage right now — different question from the
+  // Power Five, and worth showing separately.
+  const topDps = heroes
+    .filter((h) => h.dpsNum > 0)
+    .slice(0, 5)
+    .map((h, i) => ({ rank: i + 1, name: h.name, level: h.level, share: h.share }));
 
   // Gilds survive an ascension even though hero levels reset to 0, so they must
   // be counted from the whole collection, not from the levelled heroes above.
@@ -566,6 +589,7 @@ export function buildState(save, opts = {}) {
       .filter((o) => o.level > 0 || o.maxLevel > 0),
     heroes,
     powerFive,
+    topDps,
     relicsDetail: (() => {
       const types = gameData().itemBonusTypes || {};
       const items = save.items?.items || {};
